@@ -1,10 +1,10 @@
 include Make.defines
 
-PROGS =	server_1
+PROGS =	server_1.out
 
 all:	${PROGS}
 
-server_1:	server_1.o
+server_1.out:	server_1.o
 		${CC} ${CFLAGS} -o $@ server_1.o ${LIBS}
 
 clean:
