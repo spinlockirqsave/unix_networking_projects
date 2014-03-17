@@ -18,14 +18,14 @@ main(int argc, char **argv) {
     servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
     servaddr.sin_port = htons( 7777); /* daytime server */
 
-    Bind(listenfd, (SA *) & servaddr, sizeof ( servaddr));
+    Bind( listenfd, (SA *) & servaddr, sizeof ( servaddr));
     
-    Listen(listenfd, LISTENQ);
+    Listen( listenfd, LISTENQ);
 
     int i = 0;
     for ( ;; ++i) {
-        connfd = Accept(listenfd, (SA *) NULL, NULL);     
-        ticks = time(NULL);
+        connfd = Accept( listenfd, (SA *) NULL, NULL);     
+        ticks = time( NULL);
         connections[ i] = connfd;
         times[ i] = ticks;
         if ( i == 1) break;
