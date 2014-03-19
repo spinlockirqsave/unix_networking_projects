@@ -2,9 +2,19 @@
 
 #include <time.h>
 #include <assert.h>
-
+struct A{ int i;};
+void insert( struct A *array ) {
+    printf("char:%d", array[0].i);
+    printf("char:%d", array[1].i);
+}
 int
 main(int argc, char **argv) {
+    struct A i1 = {1}; struct A i2 = {2};
+    struct A * m[ 2]={ &i1, &i2};
+    printf("char:%d", (*m)[1].i);
+    printf("char:%d", (*m[1]).i);
+    insert( m);
+
     int listenfd, connfd;
     socklen_t len;
     struct sockaddr_in servaddr, cliaddr;
