@@ -33,10 +33,11 @@ main(int argc, char **argv) {
     
     snprintf( buff, sizeof (buff), "You are 0. At time: %.24s\r\n", ctime( &times[0]));
     Write( connections[0], buff, strlen(buff));
-    Close( connections[0]);
     
     snprintf( buff, sizeof (buff), "You are 1. At time: %.24s\r\n", ctime( &times[1]));
     Write( connections[1], buff, strlen( buff));
+    
+    Close( connections[0]);
     Close( connections[1]);
     
     return 0;
