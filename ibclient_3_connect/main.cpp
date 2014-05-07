@@ -9,7 +9,7 @@ extern "C" {
     #include "../../../include/unix_networking/unpv13e/lib/unp.h"
 }
 
-//#include "../../../projects/twsapi/PosixSocketClient/src/EPosixClientSocketPlatform.h"
+#include "twsapi_defs.h" 
 
 #include <time.h>
 #include <assert.h>
