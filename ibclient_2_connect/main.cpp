@@ -114,10 +114,14 @@ main( int argc, char **argv) {
     
     const int CLIENT_VERSION = 60;
     //int tmp = htonl( (uint32_t)CLIENT_VERSION);
-    std::ostringstream oss;
-    oss << CLIENT_VERSION << '\0';
-    std::string str = oss.str();
-    Write( sockfd, (void*)str.data(), sizeof( str.data()));
+//    std::ostringstream oss;
+//    oss << CLIENT_VERSION << '\0';
+//    std::string str = oss.str();
+//    Write( sockfd, (void*)str.data(), sizeof( str.data()));
+    memset( buff, sizeof(buff), 0);
+    strcpy( buff, "60");
+    buff[3] = '\0';
+    Write( sockfd, (void*)buff, 8);
     
     
         while ( (n = read(sockfd, recvline, MAXLINE)) > 0) {
