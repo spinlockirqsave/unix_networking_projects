@@ -3,6 +3,8 @@
  * Author: piter cf16 eu
  *
  * Created on May 13, 2014, 4:53 PM
+ * based on: unix networking programming
+ * select/strcliselect01.c
  * 
  * client without shutdown and with readline with transparent buffer
  * but with no check for data availability in buffer in str_cli function
