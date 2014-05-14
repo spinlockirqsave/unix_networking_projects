@@ -505,7 +505,8 @@ str_echo(int sockfd)
 		if ( sscanf( line, "%ld%ld", &arg1, &arg2) == 2)
 			snprintf( line, sizeof(line), "%ld\n", arg1 + arg2);
 		else
-			snprintf( line, sizeof(line), "input error\n");
+			snprintf( line, sizeof(line), "input error, I prefer "
+                                "to receive two long numbers so I can return a sum of it\n");
 
 		n = strlen( line);
 		Writen( sockfd, line, n);
