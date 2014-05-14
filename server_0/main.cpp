@@ -554,6 +554,8 @@ main(int argc, char **argv)
 		}
 		Close( connfd);			/* parent closes connected socket */
 	}
+        
+        return 0;
 }
 
 
