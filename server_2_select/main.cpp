@@ -520,12 +520,12 @@ str_echo(int sockfd)
 int
 main(int argc, char **argv)
 {
-	int				i, maxi, maxfd, listenfd, connfd, sockfd;
-	int				nready, client[FD_SETSIZE];
-	ssize_t				n;
-	fd_set				rset, allset;
-	char				buf[MAXLINE];
-	socklen_t			clilen;
+	int			i, maxi, maxfd, listenfd, connfd, sockfd;
+	int			nready, client[FD_SETSIZE];
+	ssize_t			n;
+	fd_set			rset, allset;
+	char			buf[MAXLINE];
+	socklen_t		clilen;
 	struct sockaddr_in	cliaddr, servaddr;
 
 	listenfd = Socket(AF_INET, SOCK_STREAM, 0);
@@ -589,4 +589,5 @@ main(int argc, char **argv)
 			}
 		}
 	}
+    return 0;
 }
