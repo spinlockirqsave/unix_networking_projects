@@ -507,6 +507,13 @@ str_echo(int sockfd)
 	}
 }
 
+void
+sigInt( int signo)
+{
+    fprintf( stdout, "sig int catched");
+    fflush( stdout);
+    exit( 0);
+}
 
 /*
  * 
@@ -514,6 +521,7 @@ str_echo(int sockfd)
 int
 main(int argc, char **argv)
 {
+        Signal( SIGINT, sigInt);
 	int				listenfd, connfd;
 	pid_t				childpid;
 	socklen_t			clilen;
