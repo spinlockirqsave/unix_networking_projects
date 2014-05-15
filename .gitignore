@@ -48,3 +48,7 @@
 /server_-1/dist/
 /server_2_select/dist/
 /server_2_select/build/
+/server_2_pselect/dist/
+/server_2_pselect/build/
+/server_3_poll/build/
+/server_3_poll/dist/

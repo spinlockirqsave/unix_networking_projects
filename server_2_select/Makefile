@@ -50,11 +50,11 @@ CC= g++
 CFLAGS+= -g
 
 
-PROGS = server_3_select
+PROGS = server_2_select
 
 all:	${PROGS}
 	
-server_3_select:	main.o
+server_2_select:	main.o
 		${CC} ${CFLAGS} main.cpp ${LIBS}
 	
 

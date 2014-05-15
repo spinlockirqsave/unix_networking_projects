@@ -539,13 +539,19 @@ str_echo(int sockfd)
 	}
 }
 
-
+void
+sigInt( int signo)
+{
+    printf( "sig int catched");
+    return;
+}
 /*
  * 
  */
 int
 main(int argc, char **argv)
 {
+        Signal( SIGINT, sigInt);
 	int			i, maxi, maxfd, listenfd, connfd, sockfd;
 	int			nready, client[FD_SETSIZE];
 	ssize_t			n;
@@ -575,7 +581,7 @@ main(int argc, char **argv)
 	for ( ; ; ) {
 		rset = allset;                  /* structure assignment */
                 
-                                sigset_t newmask, oldmask, zeromask;
+                sigset_t newmask, oldmask, zeromask;
                 sigemptyset( &zeromask);
                 sigemptyset( &newmask);
                 sigaddset( &newmask, SIGINT);
