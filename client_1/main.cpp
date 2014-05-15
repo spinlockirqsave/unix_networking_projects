@@ -224,7 +224,8 @@ str_cli(FILE *fp, int sockfd) {
             err_quit("str_cli:");
         }
         Writen(sockfd, buf, n);
-        //Shutdown(sockfd, SHUT_WR); /* send FIN */
+        Shutdown(sockfd, SHUT_WR); /* send FIN */
+        //while(1);
         //sleep(10);
     }
 }
@@ -232,7 +233,7 @@ str_cli(FILE *fp, int sockfd) {
  * 
  */
 int main(int argc, char** argv) {
-	int					sockfd;
+	int			sockfd;
 	struct sockaddr_in	servaddr;
 
 	if (argc != 2)

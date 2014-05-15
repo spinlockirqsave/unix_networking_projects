@@ -28,3 +28,23 @@
 *.bash
 
 
+/inet_pton_loose/dist/
+/inet_pton_loose/build/
+/ibclient_2_connect/dist/
+/ibclient_2_connect/build/
+/ibclient_3_connect/dist/
+/ibclient_3_connect/build/
+/socket/build/
+/socket/dist/
+/client_1/build/
+/client_1/dist/
+/client_2_io_multiplexing/dist/
+/client_2_io_multiplexing/build/
+/client_3_io_multiplexing/build/
+/client_3_io_multiplexing/dist/
+/server_0/build/
+/server_0/dist/
+/server_-1/build/
+/server_-1/dist/
+/server_2_select/dist/
+/server_2_select/build/
