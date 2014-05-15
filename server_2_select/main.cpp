@@ -520,6 +520,13 @@ str_echo(int sockfd)
 	}
 }
 
+void
+sigInt( int signo)
+{
+    fprintf( stdout, "sig int catched");
+    fflush( stdout);
+    exit( 0);
+}
 
 /*
  * 
@@ -527,6 +534,7 @@ str_echo(int sockfd)
 int
 main(int argc, char **argv)
 {
+        Signal( SIGINT, sigInt);
 	int			i, maxi, maxfd, listenfd, connfd, sockfd;
 	int			nready, client[FD_SETSIZE];
 	ssize_t			n;

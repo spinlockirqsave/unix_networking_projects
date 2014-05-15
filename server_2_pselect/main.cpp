@@ -542,8 +542,9 @@ str_echo(int sockfd)
 void
 sigInt( int signo)
 {
-    printf( "sig int catched");
-    return;
+    fprintf( stdout, "sig int catched");
+    fflush( stdout);
+    exit( 0);
 }
 /*
  * 
