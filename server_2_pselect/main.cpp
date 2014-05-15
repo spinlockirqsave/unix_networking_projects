@@ -18,6 +18,10 @@
  * But when pselect returns, the signal mask of the
  * process is reset to its value before pselect was
  * called (i.e., SIGINT is blocked).
+ * 
+ * POSIX defines the function pselect, which increases the time precision from microseconds to
+ * nanoseconds and takes a new argument that is a pointer to a signal set. This lets us avoid
+ * race conditions when signals are being caught and we talk more about in next examples
  */
 
 #include <stdio.h>
@@ -571,10 +575,13 @@ main(int argc, char **argv)
 	for ( ; ; ) {
 		rset = allset;                  /* structure assignment */
                 
-                /* select waits for something to happen: either the establishment
-                 * of a new client connection or the arrival of data, a FIN,
-                 * or an RST on an existing connection */
-		nready = Select( maxfd + 1, &rset, NULL, NULL, NULL);
+                                sigset_t newmask, oldmask, zeromask;
+                sigemptyset( &zeromask);
+                sigemptyset( &newmask);
+                sigaddset( &newmask, SIGINT);
+                sigprocmask( SIG_BLOCK, &newmask, &oldmask); /* block SIGINT */
+
+		nready = pselect( maxfd + 1, &rset, NULL, NULL, NULL, &zeromask);
 
 		if ( FD_ISSET( listenfd, &rset)) {	/* new client connection */
 
