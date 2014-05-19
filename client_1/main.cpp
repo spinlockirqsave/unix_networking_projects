@@ -18,6 +18,8 @@
 #include	<netinet/in.h>
 #include	<arpa/inet.h>
 
+#include <sys/resource.h>
+
 #define MAXLINE 4096
 #define SERV_PORT 9877
 #define SA struct sockaddr
@@ -220,10 +222,16 @@ str_cli(FILE *fp, int sockfd) {
     int n;
 
     for (int i = 0; i < 1; ++i) {
-        if ((n = Read(fileno(fp), buf, MAXLINE)) < 0) {
-            err_quit("str_cli:");
-        }
-        Writen(sockfd, buf, n);
+//        if ((n = Read(fileno(fp), buf, MAXLINE)) < 0) {
+//            err_quit("str_cli:");
+//        }
+        char* nu = "";
+        buf[0] = '1';
+        buf[1] = *nu;
+        buf[2] = '0';
+        buf[3] = '\0';
+        buf[4] = '\0';
+        Writen(sockfd, buf, 5);
         Shutdown(sockfd, SHUT_WR); /* send FIN */
         //while(1);
         //sleep(10);
@@ -233,6 +241,12 @@ str_cli(FILE *fp, int sockfd) {
  * 
  */
 int main(int argc, char** argv) {
+    
+    struct rlimit limit;
+
+    getrlimit (RLIMIT_STACK, &limit);
+    printf ("\nStack Limit = %ld and %ld max\n", limit.rlim_cur, limit.rlim_max);
+  
 	int			sockfd;
 	struct sockaddr_in	servaddr;
 

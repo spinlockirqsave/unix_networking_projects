@@ -534,6 +534,15 @@ main(int argc, char **argv)
 	servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
 	servaddr.sin_port        = htons(SERV_PORT);
 
+        /* allow to rebind when server is restarted and there
+         * exists active connection on this address and port */
+        int reuseaddr_on = 1;
+        if( setsockopt( listenfd, SOL_SOCKET, SO_REUSEADDR,
+                &reuseaddr_on, sizeof( reuseaddr_on)) < 0)
+        {
+            // log
+        }
+
 	Bind( listenfd, (SA *) &servaddr, sizeof( servaddr));
 
 	Listen( listenfd, LISTENQ);

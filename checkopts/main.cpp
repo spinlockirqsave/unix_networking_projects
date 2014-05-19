@@ -132,14 +132,14 @@ struct sock_opts {
   char   *( *opt_val_str)( union val *, int);
 } sock_opts[] = {
 	{ "SO_BROADCAST",		SOL_SOCKET,	SO_BROADCAST,	sock_str_flag },
-	{ "SO_DEBUG",			SOL_SOCKET,	SO_DEBUG,		sock_str_flag },
+	{ "SO_DEBUG",			SOL_SOCKET,	SO_DEBUG,	sock_str_flag },
 	{ "SO_DONTROUTE",		SOL_SOCKET,	SO_DONTROUTE,	sock_str_flag },
-	{ "SO_ERROR",			SOL_SOCKET,	SO_ERROR,		sock_str_int },
+	{ "SO_ERROR",			SOL_SOCKET,	SO_ERROR,	sock_str_int },
 	{ "SO_KEEPALIVE",		SOL_SOCKET,	SO_KEEPALIVE,	sock_str_flag },
-	{ "SO_LINGER",			SOL_SOCKET,	SO_LINGER,		sock_str_linger },
+	{ "SO_LINGER",			SOL_SOCKET,	SO_LINGER,	sock_str_linger },
 	{ "SO_OOBINLINE",		SOL_SOCKET,	SO_OOBINLINE,	sock_str_flag },
-	{ "SO_RCVBUF",			SOL_SOCKET,	SO_RCVBUF,		sock_str_int },
-	{ "SO_SNDBUF",			SOL_SOCKET,	SO_SNDBUF,		sock_str_int },
+	{ "SO_RCVBUF",			SOL_SOCKET,	SO_RCVBUF,	sock_str_int },
+	{ "SO_SNDBUF",			SOL_SOCKET,	SO_SNDBUF,	sock_str_int },
 	{ "SO_RCVLOWAT",		SOL_SOCKET,	SO_RCVLOWAT,	sock_str_int },
 	{ "SO_SNDLOWAT",		SOL_SOCKET,	SO_SNDLOWAT,	sock_str_int },
 	{ "SO_RCVTIMEO",		SOL_SOCKET,	SO_RCVTIMEO,	sock_str_timeval },
@@ -234,11 +234,11 @@ main(int argc, char **argv)
 			}
 
 			len = sizeof(val);
-			if (getsockopt(fd, ptr->opt_level, ptr->opt_name,
+			if ( getsockopt( fd, ptr->opt_level, ptr->opt_name,
 						   &val, &len) == -1) {
-				err_ret("getsockopt error");
+				err_ret( "getsockopt error");
 			} else {
-				printf("default = %s\n", (*ptr->opt_val_str)(&val, len));
+				printf( "default = %s\n", (*ptr->opt_val_str)(&val, len));
 			}
 			close(fd);
 		}
@@ -251,7 +251,7 @@ main(int argc, char **argv)
 static char	strres[128];
 
 static char	*
-sock_str_flag(union val *ptr, int len)
+sock_str_flag( union val *ptr, int len)
 {
 /* *INDENT-OFF* */
 	if (len != sizeof(int))
@@ -265,7 +265,7 @@ sock_str_flag(union val *ptr, int len)
 /* end checkopts3 */
 
 static char	*
-sock_str_int(union val *ptr, int len)
+sock_str_int( union val *ptr, int len)
 {
 	if (len != sizeof(int))
 		snprintf(strres, sizeof(strres), "size (%d) not sizeof(int)", len);
