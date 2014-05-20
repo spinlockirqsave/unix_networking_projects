@@ -568,8 +568,12 @@ main(int argc, char **argv)
 	servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
 	servaddr.sin_port        = htons(SERV_PORT);
 
-        /* allow to rebind when server is restarted and there
-         * exists active connection on this address and port */
+        /* SO_REUSEADDR allows a new server to be started
+         * on the same port as an existing server that is
+         * bound to the wildcard address, as long as each
+         * instance binds a different local IP address.
+         * This is common for a site hosting multiple HTTP
+         * servers using the IP alias technique */
         int reuseaddr_on = 1;
         if( setsockopt( listenfd, SOL_SOCKET, SO_REUSEADDR,
                 &reuseaddr_on, sizeof( reuseaddr_on)) < 0)
