@@ -551,7 +551,7 @@ main(int argc, char **argv)
         if ( fcntl( listenfd, F_SETFL, flags) < 0)
             err_sys("F_SETFL error");
         
-                                /*
+                        /*
                          * catch SIGIO
                          */
                         struct sigaction	act, oact;
