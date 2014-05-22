@@ -502,8 +502,15 @@ str_echo(int sockfd)
 		if ( ( n = Read(sockfd, line, MAXLINE)) == 0)
 			return;		/* connection closed by other end */
 
+                fprintf( stdout, "Read:%d", n);
+                fflush( stdout);
+                
 		n = strlen( line);
+
 		Writen( sockfd, line, n);
+                
+                fprintf( stdout, "strlen and send:%d", n);
+                fflush( stdout);
 	}
 }
 

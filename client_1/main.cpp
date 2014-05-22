@@ -221,18 +221,30 @@ str_cli(FILE *fp, int sockfd) {
     char buf[MAXLINE];
     int n;
 
-    for (int i = 0; i < 1; ++i) {
-//        if ((n = Read(fileno(fp), buf, MAXLINE)) < 0) {
-//            err_quit("str_cli:");
-//        }
-        char* nu = "";
-        buf[0] = '1';
-        buf[1] = *nu;
-        buf[2] = '0';
-        buf[3] = '\0';
-        buf[4] = '\0';
-        Writen(sockfd, buf, 5);
-        Shutdown(sockfd, SHUT_WR); /* send FIN */
+        buf[1] = '8';
+        buf[2] = '8';
+        buf[3] = '8';
+        buf[4] = '8';
+        
+    for ( ;;) {
+        if ((n = Read(fileno(fp), buf, MAXLINE)) < 0) {
+            err_quit("str_cli:");
+        }
+//        char* nu = "";
+//        buf[0] = '1';
+//        buf[1] = *nu;
+//        buf[2] = '0';
+//        buf[3] = '\0';
+//        buf[4] = '\0';
+
+        fprintf( stdout, "Read:%d", n);
+        fflush( stdout);
+        //buf[1] = 0;
+        //n = strlen(buf);
+        Writen(sockfd, buf, n);
+        fprintf( stdout, "Writen:%d", n);
+        fflush( stdout);
+        //Shutdown(sockfd, SHUT_WR); /* send FIN */
         //while(1);
         //sleep(10);
     }
