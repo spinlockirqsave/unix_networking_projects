@@ -280,6 +280,10 @@ dg_cli( FILE *fp, int sockfd, const SA *pservaddr, socklen_t servlen)
 
 	while ( Fgets( sendline, MAXLINE, fp) != NULL) {
 
+            /* If server is not listening an ICMP will be returned with Type 3 Code 3
+             * destination unreachable, port unreachable. The basic rule is that an
+             * asynchronous error is not returned for a UDP socket unless the
+             * socket has been connected. */
 		Sendto(sockfd, sendline, strlen(sendline), 0, pservaddr, servlen);
 
 		n = Recvfrom(sockfd, recvline, MAXLINE, 0, NULL, NULL);
