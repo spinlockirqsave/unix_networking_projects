@@ -334,9 +334,17 @@ dg_cli(FILE *fp, int sockfd, const SA *pservaddr, socklen_t servlen)
 	while (Fgets(sendline, MAXLINE, fp) != NULL) {
 
             /* If server is not listening an ICMP will be returned with Type 3 Code 3
-             * destination unreachable, port unreachable. The basic rule is that an
-             * asynchronous error is not returned for a UDP socket unless the
-             * socket has been connected. */
+             * destination unreachable, port unreachable.
+             * 
+             * Host that doesn't listen responds with an ICMP port unreachable.
+             * This ICMP error message contains the IP header and UDP header
+             * of the datagram that caused the error. ( ICMPv4 and ICMPv6 error
+             * messages always contain the IP header and all of the UDP header
+             * or part of the TCP header to allow the receiver of the ICMP
+             * error to determine which socket caused the error)
+             * 
+             * The basic rule is that an asynchronous error is not returned
+             * for a UDP socket unless the socket has been connected. */
 		Sendto(sockfd, sendline, strlen(sendline), 0, pservaddr, servlen);
 
 		len = servlen;
