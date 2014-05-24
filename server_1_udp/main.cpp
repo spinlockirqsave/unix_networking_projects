@@ -300,9 +300,15 @@ dg_echo( int sockfd, SA *pcliaddr, socklen_t clilen)
 		len = clilen;
 		n = Recvfrom( sockfd, mesg, MAXLINE, 0, pcliaddr, &len);
 
+                /* protocol dependent!
+                 * but still better than inet_ntoa: the string pointed
+                 * to by the return value of the inet_ntoa resides in
+                 * static memory. This means the function is not reentrant
+                 */
                 char buff[100];
                 inet_ntop( AF_INET, &( (sockaddr_in* ) pcliaddr)->sin_addr, buff, 100);
                 fprintf( stdout, "From:%s\n", buff);
+                
 		Sendto( sockfd, mesg, n, 0, pcliaddr, len);
 	}
 }
