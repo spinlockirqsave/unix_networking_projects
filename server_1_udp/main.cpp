@@ -300,6 +300,9 @@ dg_echo( int sockfd, SA *pcliaddr, socklen_t clilen)
 		len = clilen;
 		n = Recvfrom( sockfd, mesg, MAXLINE, 0, pcliaddr, &len);
 
+                char buff[100];
+                inet_ntop( AF_INET, &( (sockaddr_in* ) pcliaddr)->sin_addr, buff, 100);
+                fprintf( stdout, "From:%s\n", buff);
 		Sendto( sockfd, mesg, n, 0, pcliaddr, len);
 	}
 }
