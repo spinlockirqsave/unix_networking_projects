@@ -383,7 +383,11 @@ dg_echo( int sockfd, SA *pcliaddr, socklen_t clilen)
 		len = clilen;
 		n = Recvfrom( sockfd, mesg, MAXLINE, 0, pcliaddr, &len);
 
-                /* print address protocol dependent */
+                /* in both cases we don't use inet_ntoa: the string pointed
+                 * to by the return value of the inet_ntoa resides in
+                 * static memory. This means the function is not reentrant */
+                
+                /* 1. print address protocol dependent */
                 char buff[100];
                 char portstr[8];
                 inet_ntop( AF_INET, &( (sockaddr_in* ) pcliaddr)->sin_addr, buff, 100);
@@ -394,7 +398,7 @@ dg_echo( int sockfd, SA *pcliaddr, socklen_t clilen)
 		}
                 fprintf( stdout, "From:%s\n", buff);
                 
-                /* print protocol independent and with port number*/
+                /* 2. print protocol independent and with port number*/
                 fprintf( stdout, "From:%s\n", Sock_ntop( pcliaddr, len));
                 
 		Sendto( sockfd, mesg, n, 0, pcliaddr, len);
