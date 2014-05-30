@@ -615,9 +615,9 @@ Inet_ntop(int family, const void *addrptr, char *strptr, size_t len)
 	const char	*ptr;
 
 	if (strptr == NULL)		/* check for old code */
-		err_quit("NULL 3rd argument to inet_ntop");
-	if ( (ptr = inet_ntop(family, addrptr, strptr, len)) == NULL)
-		err_sys("inet_ntop error");		/* sets errno */
+		err_quit( "NULL 3rd argument to inet_ntop");
+	if ( (ptr = inet_ntop( family, addrptr, strptr, len)) == NULL)
+		err_sys( "inet_ntop error");		/* sets errno */
 	return(ptr);
 }
 
@@ -626,10 +626,10 @@ Inet_pton(int family, const char *strptr, void *addrptr)
 {
 	int		n;
 
-	if ( (n = inet_pton(family, strptr, addrptr)) < 0)
-		err_sys("inet_pton error for %s", strptr);	/* errno set */
-	else if (n == 0)
-		err_quit("inet_pton error for %s", strptr);	/* errno not set */
+	if ( (n = inet_pton( family, strptr, addrptr)) < 0)
+		err_sys( "inet_pton error for %s", strptr);	/* errno set */
+	else if ( n == 0)
+		err_quit( "inet_pton error for %s", strptr);	/* errno not set */
 
 	/* nothing to return */
 }
@@ -647,11 +647,12 @@ main(int argc, char **argv)
 	while ( --argc > 0) {
 		ptr = *++argv;
 		if ( ( hptr = gethostbyname(ptr)) == NULL) {
-			err_msg("gethostbyname error for host: %s: %s",
+			err_msg( "gethostbyname error for host: %s: %s",
 					ptr, hstrerror( h_errno));
 			continue;
 		}
-		printf("official hostname: %s\n", hptr->h_name);
+                /* FQDN */
+		printf( "official hostname: %s\n", hptr->h_name);
 
 		for ( pptr = hptr->h_aliases; *pptr != NULL; pptr++)
 			printf( "\talias: %s\n", *pptr);
@@ -660,12 +661,12 @@ main(int argc, char **argv)
 		case AF_INET:
 			pptr = hptr->h_addr_list;
 			for ( ; *pptr != NULL; pptr++)
-				printf("\taddress: %s\n",
+				printf( "\taddress: %s\n",
 					Inet_ntop( hptr->h_addrtype, *pptr, str, sizeof(str)));
 			break;
 
 		default:
-			err_ret("unknown address type");
+			err_ret( "unknown address type");
 			break;
 		}
 	}
