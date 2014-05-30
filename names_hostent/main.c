@@ -646,6 +646,8 @@ main(int argc, char **argv)
 
 	while ( --argc > 0) {
 		ptr = *++argv;
+                /* takes name, returns pointer to struct hostent,
+                 * that contains addr_list of binary IPv4 addresses */
 		if ( ( hptr = gethostbyname(ptr)) == NULL) {
 			err_msg( "gethostbyname error for host: %s: %s",
 					ptr, hstrerror( h_errno));
