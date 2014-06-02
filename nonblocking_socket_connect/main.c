@@ -8,6 +8,13 @@
 #include "networking_functions.h"
 #include <time.h>
 
+#define IPv4
+#define IPv6
+#define UNIXdomain
+
+static const char *str_fam(int);
+static const char *str_sock(int);
+
 /**
  * Resolve host names.
  * Return 0 on success or EAI_* errcode to be used with gai_strerror().
@@ -121,9 +128,11 @@ static int timeout_connect( int fd, const struct sockaddr *serv_addr, socklen_t 
         return -1;
     }
     
+    /* pending errors? */
     if ( optval != 0) {
         
         errno = optval;
+        err_ret( "getsockopt fetched error, %s", strerror( errno));
         return -1;
     }
     
@@ -163,7 +172,7 @@ int connect_nonblocking_socket( const char* host, unsigned int port, int family)
         /* try to create socket */
         m_fd = socket( ai->ai_family, ai->ai_socktype, 0);
         
-        if (m_fd < 0) {
+        if ( m_fd < 0) {
             
             con_errno = errno;
             continue;
@@ -182,6 +191,8 @@ int connect_nonblocking_socket( const char* host, unsigned int port, int family)
             continue;
         }
         /* successfully  connected */
+        err_ret( "Success: host %s, port %d, family %s, socktype %s",
+                host, port, str_fam( ai->ai_family), str_sock( ai->ai_socktype));
         break;
     }
     
@@ -216,10 +227,49 @@ int main( int argc, char** argv) {
 static void
 usage( const char *msg)
 {
-	printf( "usage: tcp_connect <host> <port>\n");
+	printf( "usage: tcp_connect <host> <port>\n"
+                "\n"
+                "example:\n"
+                "./nonblocking_socket_connect localhost 7496\n"
+        );
 
 	if ( msg[0] != 0)
 		printf( "%s\n", msg);
 	exit(1);
+}
+
+static const char *
+str_fam( int family)
+{
+#ifdef	IPv4
+	if (family == AF_INET)
+		return("AF_INET");
+#endif
+#ifdef	IPv6
+	if (family == AF_INET6)
+		return("AF_INET6");
+#endif
+#ifdef	UNIXdomain
+	if (family == AF_LOCAL)
+		return("AF_LOCAL");
+#endif
+	return("<unknown family>");
+}
+
+static const char *
+str_sock( int socktype)
+{
+	switch(socktype) {
+	case SOCK_STREAM:	return "SOCK_STREAM";
+	case SOCK_DGRAM:	return "SOCK_DGRAM";
+	case SOCK_RAW:		return "SOCK_RAW";
+#ifdef SOCK_RDM
+	case SOCK_RDM:		return "SOCK_RDM";
+#endif
+#ifdef SOCK_SEQPACKET
+	case SOCK_SEQPACKET:return "SOCK_SEQPACKET";
+#endif
+	default:		return "<unknown socktype>";
+	}
 }
 
