@@ -87,8 +87,9 @@ static int timeout_connect( int fd, const struct sockaddr *serv_addr, socklen_t 
     
     int res;
     if ( ( res = connect( fd, serv_addr, addrlen)) < 0) {
+        
         if ( errno != EINPROGRESS) {
-            Close( fd);
+
             err_ret( "timeout_connect error, %s", strerror( errno));
             return -1;
         }
@@ -97,6 +98,7 @@ static int timeout_connect( int fd, const struct sockaddr *serv_addr, socklen_t 
     if( res == 0) return 0;
     
     if ( wait_socket( fd, WAIT_WRITE) <= 0) {
+        
         /* if timeout */
         if (errno == 0) {
             errno = ETIMEDOUT;
@@ -106,14 +108,20 @@ static int timeout_connect( int fd, const struct sockaddr *serv_addr, socklen_t 
         return -1;
     }
 
-    /* check the result of the connection attempt */
+    /* 
+     * Completed the connection or the connect has failed
+     * Check the result of the connection attempt
+     */
     int optval = 0;
     socklen_t optlen = sizeof optval;
 
     if ( getsockopt( fd, SOL_SOCKET, SO_ERROR, &optval, &optlen) == -1) {
+        
         return -1;
     }
+    
     if ( optval != 0) {
+        
         errno = optval;
         return -1;
     }
@@ -124,9 +132,11 @@ static inline int
 set_socket_nonblock(int sockfd)
 {
 	int flags = fcntl( sockfd, F_GETFL, 0 );
+        
 	if( flags == -1 ) {
 		err_sys( "set_socket_nonblock error");
 	}
+        
 	if( fcntl(sockfd, F_SETFL, flags | O_NONBLOCK)  == -1 ) {
 		err_sys( "set_socket_nonblock error");
 	}
