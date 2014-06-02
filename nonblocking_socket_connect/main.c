@@ -108,7 +108,7 @@ static int timeout_connect( int fd, const struct sockaddr *serv_addr, socklen_t 
     if ( wait_socket( fd, WAIT_WRITE) <= 0) {
         
         /* if timeout */
-        if (errno == 0) {
+        if ( errno == 0) {
             errno = ETIMEDOUT;
         }
         /* maybe interrupted by a caught signal */
@@ -120,11 +120,16 @@ static int timeout_connect( int fd, const struct sockaddr *serv_addr, socklen_t 
      * Completed the connection or the connect has failed
      * Check the result of the connection attempt
      */
-    int optval = 0;
+    int optval = 0; // value-result variable for pending error
     socklen_t optlen = sizeof optval;
 
+    /* get pending error ( if any) and clear:
+     * The value of so_error ( socket member)
+     * is reset to 0 by the kernel
+     */
     if ( getsockopt( fd, SOL_SOCKET, SO_ERROR, &optval, &optlen) == -1) {
         
+        err_ret( "getsockopt error");
         return -1;
     }
     
@@ -139,6 +144,10 @@ static int timeout_connect( int fd, const struct sockaddr *serv_addr, socklen_t 
     return 0;
 }
 
+/* 
+ * POSIX way to set a socket for nonblocking I/O
+ * that is: using fcntl function
+ */
 static inline void
 Set_socket_nonblock( int sockfd)
 {
