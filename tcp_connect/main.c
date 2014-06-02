@@ -90,7 +90,7 @@ int main(int argc, char** argv) {
 
     int sockfd;
     
-    if (argc < 2)
+    if (argc < 3)
 	usage("");
     
     sockfd = Tcp_connect( argv[1], atoi( argv[2]), AF_INET);
