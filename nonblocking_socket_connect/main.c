@@ -89,7 +89,8 @@ static int timeout_connect( int fd, const struct sockaddr *serv_addr, socklen_t 
     if ( ( res = connect( fd, serv_addr, addrlen)) < 0) {
         if ( errno != EINPROGRESS) {
             Close( fd);
-            err_sys( "timeout_connect error, %s", strerror( errno));
+            err_ret( "timeout_connect error, %s", strerror( errno));
+            return -1;
         }
     }
     
@@ -101,17 +102,18 @@ static int timeout_connect( int fd, const struct sockaddr *serv_addr, socklen_t 
             errno = ETIMEDOUT;
         }
         /* maybe interrupted by a caught signal */
-        err_sys( "timeout_connect for wait_socket error, %s", strerror( errno));
-    }
-
-    /* Completed or failed */
-    int optval = 0;
-    socklen_t optlen = sizeof (optval);
-    /* casting  &optval to char* is required for win32 */
-    if ( getsockopt(fd, SOL_SOCKET, SO_ERROR, (char*) &optval, &optlen) == -1) {
+        err_ret( "timeout_connect for wait_socket error, %s", strerror( errno));
         return -1;
     }
-    if (optval != 0) {
+
+    /* check the result of the connection attempt */
+    int optval = 0;
+    socklen_t optlen = sizeof optval;
+
+    if ( getsockopt( fd, SOL_SOCKET, SO_ERROR, &optval, &optlen) == -1) {
+        return -1;
+    }
+    if ( optval != 0) {
         errno = optval;
         return -1;
     }
@@ -162,7 +164,7 @@ int connect_nonblocking_socket( const char* host, unsigned int port, int family)
         // try to connect
         if ( timeout_connect( m_fd, ai->ai_addr, ai->ai_addrlen) < 0) {
             con_errno = errno;
-            Close(m_fd);
+            Close( m_fd);
             m_fd = -1;
             continue;
         }
