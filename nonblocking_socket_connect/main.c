@@ -86,6 +86,7 @@ static int wait_socket( int fd, int flag )
 static int timeout_connect( int fd, const struct sockaddr *serv_addr, socklen_t addrlen) {
     
     int res;
+    
     if ( ( res = connect( fd, serv_addr, addrlen)) < 0) {
         
         if ( errno != EINPROGRESS) {
@@ -125,23 +126,22 @@ static int timeout_connect( int fd, const struct sockaddr *serv_addr, socklen_t 
         errno = optval;
         return -1;
     }
+    
     return 0;
 }
 
-static inline int
-set_socket_nonblock(int sockfd)
+static inline void
+Set_socket_nonblock( int sockfd)
 {
-	int flags = fcntl( sockfd, F_GETFL, 0 );
+	int flags = fcntl( sockfd, F_GETFL, 0);
         
 	if( flags == -1 ) {
 		err_sys( "set_socket_nonblock error");
 	}
         
-	if( fcntl(sockfd, F_SETFL, flags | O_NONBLOCK)  == -1 ) {
+	if( fcntl( sockfd, F_SETFL, flags | O_NONBLOCK)  == -1 ) {
 		err_sys( "set_socket_nonblock error");
 	}
-
-	return 0;
 }
 
 int connect_nonblocking_socket( const char* host, unsigned int port, int family) {
@@ -157,25 +157,28 @@ int connect_nonblocking_socket( const char* host, unsigned int port, int family)
     
     int con_errno = 0;
     struct addrinfo *ai;
+    
     for ( ai = aiFirst; ai != NULL; ai = ai->ai_next) {
 
-        // create socket
+        /* try to create socket */
         m_fd = socket( ai->ai_family, ai->ai_socktype, 0);
+        
         if (m_fd < 0) {
+            
             con_errno = errno;
             continue;
         }
 
-        /* Set socket O_NONBLOCK. If wanted we could handle errors
-           (portability!) We could even make O_NONBLOCK optional. */
-        int sn = set_socket_nonblock( m_fd);
-        //assert(sn == 0);
+        /* set socket to O_NONBLOCK */
+        Set_socket_nonblock( m_fd);
 
-        // try to connect
+        /* try to connect with given association */
         if ( timeout_connect( m_fd, ai->ai_addr, ai->ai_addrlen) < 0) {
+            
             con_errno = errno;
             Close( m_fd);
             m_fd = -1;
+            /* try another association */
             continue;
         }
         /* successfully  connected */
