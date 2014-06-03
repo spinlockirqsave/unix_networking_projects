@@ -177,13 +177,14 @@ int connect_nonblocking_socket( const char* host, unsigned int port, int family)
     
     int sockfd, m_fd, n;
 
-    // starting to connect to server
+    /* connect to server */
     struct addrinfo *aiFirst;
 
     if ( ( n = resolveHost( host, port, family, &aiFirst)) != 0)
                 err_quit( "connect error for host %s, port %d: err: %s",
                         host, port, gai_strerror (n));
     
+    /* Try each addrinfo structure until success or end of list*/
     int con_errno = 0;
     struct addrinfo *ai;
     
@@ -216,6 +217,11 @@ int connect_nonblocking_socket( const char* host, unsigned int port, int family)
         break;
     }
     
+    if( ai == NULL) {
+
+        err_ret( "connect_nonblocking_socket failure");
+        return -1;
+    }
     freeaddrinfo( aiFirst);
     return 0;
 
