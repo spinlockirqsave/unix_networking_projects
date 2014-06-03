@@ -53,15 +53,13 @@ static int resolveHost(const char *host, unsigned int port, int family,
 }
 
 int
-Tcp_connect(int fd, const struct sockaddr *servaddr, socklen_t addrlen) {
+Tcp_connect( int fd, const struct sockaddr *servaddr, socklen_t addrlen) {
     if ( connect( fd, servaddr, addrlen) < 0)
         err_sys( "connect error");
 }
 
 static void
 usage(const char *msg);
-
-
 
 
 enum Wait {
@@ -92,8 +90,8 @@ static int wait_socket( int fd, int flag )
 		ret = select( fd + 1, NULL, &waitSet, NULL, &tval );
 		break;
 	default:
-		//assert( false );
-		ret = 0; // timeout
+		err_sys( "wait_socket default - never should get here");
+		ret = 0;
 		break;
 	}
 
