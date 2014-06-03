@@ -19,30 +19,37 @@ static const char *str_sock(int);
  * Resolve host names.
  * Return 0 on success or EAI_* errcode to be used with gai_strerror().
  */
-static int resolveHost( const char *host, unsigned int port, int family,
-	struct addrinfo **res )
-{
-	struct addrinfo hints;
+static int resolveHost(const char *host, unsigned int port, int family,
+        struct addrinfo **res) {
+    
+    /* specifies the type of socket address structure
+     * that we expect to be returned */
+    struct addrinfo hints;
 
-	memset( &hints, 0, sizeof(struct addrinfo));
-	hints.ai_family = family;
-	hints.ai_socktype = SOCK_STREAM;
-	hints.ai_flags = 0;
+    memset( &hints, 0, sizeof ( struct addrinfo));
+    hints.ai_family = family;
+    hints.ai_socktype = SOCK_STREAM;
+    hints.ai_flags = 0;
 #if HAVE_DECL_AI_ADDRCONFIG
-	hints.ai_flags |= AI_ADDRCONFIG;
+    hints.ai_flags |= AI_ADDRCONFIG;
 #endif
 #if HAVE_DECL_AI_V4MAPPED
-	hints.ai_flags |= AI_V4MAPPED;
+    hints.ai_flags |= AI_V4MAPPED;
 #endif
-	hints.ai_protocol = 0;
+    hints.ai_protocol = 0;
 
-        /* Convert the port number into a string. */
-	char strport[32];
-	snprintf( strport, sizeof strport, "%u", port);
+    /* Convert the port number into a string. */
+    char strport[32];
+    snprintf(strport, sizeof strport, "%u", port);
 
-	int ret = getaddrinfo( host, strport, &hints, res);
-        
-	return ret;
+    int ret = getaddrinfo( host, strport, &hints, res);
+    if ( ret != 0) {
+        err_quit("resolveHost error for host %s, port %d: %s",
+                host, port, gai_strerror (ret));
+
+    }
+
+    return ret;
 }
 
 int
@@ -57,7 +64,10 @@ usage(const char *msg);
 
 
 
-enum { WAIT_READ = 1, WAIT_WRITE = 2 };
+enum Wait {
+    WAIT_READ = 0,
+    WAIT_WRITE = 1
+};
 
 static int wait_socket( int fd, int flag )
 {
@@ -146,19 +156,22 @@ static int timeout_connect( int fd, const struct sockaddr *serv_addr, socklen_t 
 
 /* 
  * POSIX way to set a socket for nonblocking I/O
- * that is: using fcntl function
+ * that is: using fcntl ( file control) function.
+ * POSIX specifies that fcntl is the preferred way
+ * over ioctl
  */
 static inline void
-Set_socket_nonblock( int sockfd)
+Set_socket_for_nonblocking_io( int sockfd)
 {
 	int flags = fcntl( sockfd, F_GETFL, 0);
         
 	if( flags == -1 ) {
-		err_sys( "set_socket_nonblock error");
+		err_sys( "Set_socket_for_nonblocking_io fcntl F_GETFL error");
 	}
         
-	if( fcntl( sockfd, F_SETFL, flags | O_NONBLOCK)  == -1 ) {
-		err_sys( "set_socket_nonblock error");
+        flags |= O_NONBLOCK;
+	if( fcntl( sockfd, F_SETFL, flags)  == -1 ) {
+		err_sys( "Set_socket_for_nonblocking_io fcntl F_SETFL error");
 	}
 }
 
@@ -188,7 +201,7 @@ int connect_nonblocking_socket( const char* host, unsigned int port, int family)
         }
 
         /* set socket to O_NONBLOCK */
-        Set_socket_nonblock( m_fd);
+        Set_socket_for_nonblocking_io( m_fd);
 
         /* try to connect with given association */
         if ( timeout_connect( m_fd, ai->ai_addr, ai->ai_addrlen) < 0) {
