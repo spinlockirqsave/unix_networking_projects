@@ -67,6 +67,7 @@ enum Wait {
     WAIT_WRITE = 1
 };
 
+/* wrapper, jacket around the system call select*/
 static int wait_socket( int fd, int flag )
 {
 	errno = 0;
