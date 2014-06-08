@@ -54,9 +54,9 @@ Udp_client( const char *host, const char *serv, SA **saptr, socklen_t *lenptr)
 int
 tcp_listen( const char *host, const char *serv, socklen_t *addrlenp)
 {
-	int				listenfd, n;
+	int			listenfd, n;
 	const int		on = 1;
-	struct addrinfo	hints, *res, *ressave;
+	struct addrinfo         hints, *res, *ressave;
 
 	bzero( &hints, sizeof( struct addrinfo));
 	hints.ai_flags = AI_PASSIVE;
