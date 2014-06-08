@@ -1,6 +1,6 @@
 /* 
  * File:   main.c
- * Author: root
+ * Author: piter
  *
  * Created on June 8, 2014, 3:37 PM
  */
