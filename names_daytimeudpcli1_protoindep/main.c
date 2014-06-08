@@ -43,13 +43,13 @@ udp_client( const char *host, const char *serv, SA **saptr, socklen_t *lenp)
 
 	return( sockfd);
 }
-/* end udp_client */
 
 int
 Udp_client( const char *host, const char *serv, SA **saptr, socklen_t *lenptr)
 {
 	return( udp_client( host, serv, saptr, lenptr));
 }
+
 
 int
 tcp_listen( const char *host, const char *serv, socklen_t *addrlenp)
