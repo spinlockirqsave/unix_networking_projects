@@ -32,6 +32,12 @@ udp_connect( const char *host, const char *serv)
 		if ( sockfd < 0)
 			continue;	/* ignore this one */
 
+                /* 
+                 * The call to connect with a UDP socket does not send anything to the peer.
+                 * If something is wrong ( the peer is unreachable or there is no server
+                 * at the specified port), the caller does not discover that until it sends
+                 * a datagram to the peer.
+                 */
 		if ( connect( sockfd, res->ai_addr, res->ai_addrlen) == 0)
 			break;		/* success */
 
