@@ -216,11 +216,17 @@ Send(int fd, const void *ptr, size_t nbytes, int flags)
 }
 
 void
-Sendto(int fd, const void *ptr, size_t nbytes, int flags,
+Sendto( int fd, const void *ptr, size_t nbytes, int flags,
 	   const struct sockaddr *sa, socklen_t salen)
 {
-	if (sendto(fd, ptr, nbytes, flags, sa, salen) != (ssize_t)nbytes)
-		err_sys("sendto error");
+    int err;
+	if ( ( err = sendto(fd, ptr, nbytes, flags, sa, salen)) < 0) {
+            printf( "Sendto err:%d\n",err);
+            fflush(stdout);
+            err_sys( "sendto error");
+        }
+        printf( "Sendto nbytes:%d\n",err);
+        fflush(stdout);
 }
 
 void
@@ -400,6 +406,8 @@ Recvfrom(int fd, void *ptr, size_t nbytes, int flags,
 
 	if ( (n = recvfrom(fd, ptr, nbytes, flags, sa, salenptr)) < 0)
 		err_sys("recvfrom error");
+        printf( "Recvfrom n:%d\n",n);
+        fflush(stdout);
 	return(n);
 }
 
