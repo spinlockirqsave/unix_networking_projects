@@ -174,14 +174,24 @@ main(int argc, char **argv)
 		err_quit( "usage: daytimeudpcli1 <hostname/IPaddress> <service/port#>");
 
 	sockfd = Udp_client( argv[1], argv[2], (void **) &sa, &salen);
+        
+        /* At this moment we don't know if peer is reachable or not
+         * If it is not reachable sendto return Success but Recvfrom
+         * will block forever (it doesn't see an ICMP "destination
+         * unreachable" packet coming back from peer
+         */
 
-	printf( "sending to %s\n", Sock_ntop_host(sa, salen));
+	printf( "sending to %s\n", Sock_ntop_host( sa, salen));
 
 	Sendto( sockfd, "", 1, 0, sa, salen);	/* send 1-byte datagram */
-
+        printf( "sent, errno:%s\n", strerror(errno));
+        
 	n = Recvfrom( sockfd, recvline, MAXLINE, 0, NULL, NULL);
+        // never gets here if peer is not reachable
+        printf( "received n=%d\n", n);
 	recvline[n] = '\0';	/* null terminate */
 	Fputs( recvline, stdout);
+        printf( "fputed\n");
 
 	exit(0);
 }
