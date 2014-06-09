@@ -191,17 +191,12 @@ main(int argc, char **argv)
          * TIME_WAIT state for a UDP socket, there is no need to set this socket
          * option when the server is started.*/
 	sockfd = Udp_connect( argv[1], argv[2]);
-        
-        /* At this moment we don't know if peer is reachable or not
-         * If it is not reachable sendto return Success but Recvfrom
-         * will block forever (it doesn't see an ICMP "destination
-         * unreachable" packet coming back from peer
-         */
 
+        /* The socket is connected so we call Read Write not Sendto Recvfrom */
 	printf( "sending\n");
 	Write(sockfd, "", 1);	/* send 1-byte datagram */
 
-	n = Read(sockfd, recvline, MAXLINE);
+	n = Read( sockfd, recvline, MAXLINE);
 	recvline[n] = '\0';	/* null terminate */
 	Fputs(recvline, stdout);
 
