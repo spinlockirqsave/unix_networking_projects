@@ -18,6 +18,10 @@ tcp_listen(const char *host, const char *serv, socklen_t *addrlenp)
 	const int		on = 1;
 	struct addrinfo	hints, *res, *ressave;
 
+        /* We set the address family to AF_UNSPEC, but the caller can use
+         * specific address to force a particular protocol (IPv4 or IPv6)
+         * i.e. 0.0.0.0 for IPv4 or 0::0 for IPv6
+         */
 	bzero(&hints, sizeof(struct addrinfo));
 	hints.ai_flags = AI_PASSIVE;
 	hints.ai_family = AF_UNSPEC;
