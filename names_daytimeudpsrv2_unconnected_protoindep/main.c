@@ -14,8 +14,8 @@
 int
 udp_server(const char *host, const char *serv, socklen_t *addrlenp)
 {
-	int				sockfd, n;
-	struct addrinfo	hints, *res, *ressave;
+	int			sockfd, n;
+	struct addrinfo         hints, *res, *ressave;
 
 	bzero(&hints, sizeof(struct addrinfo));
 	hints.ai_flags = AI_PASSIVE;
@@ -32,6 +32,7 @@ udp_server(const char *host, const char *serv, socklen_t *addrlenp)
 		if ( sockfd < 0)
 			continue;		/* error - try next one */
 
+                /* unconnected socket, just bind with no connect */
 		if ( bind( sockfd, res->ai_addr, res->ai_addrlen) == 0)
 			break;			/* success */
 
@@ -247,6 +248,13 @@ main(int argc, char **argv)
 		ticks = time(NULL);
 		snprintf(buff, sizeof(buff), "%.24s\r\n", ctime(&ticks));
 		Sendto(sockfd, buff, strlen(buff), 0, (SA *)&cliaddr, len);
+               /* At this moment we don't know if peer is reachable or not
+                * If it is not reachable sendto return Success but Recvfrom
+                * will block forever (it doesn't see an ICMP "destination
+                * unreachable" packet coming back from peer because socket
+                * is unconnected)
+                */
+                
 	}
 }
 
