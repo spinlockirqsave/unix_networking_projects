@@ -3,6 +3,8 @@
  * Author: piter cf16 eu
  *
  * Created on May 30, 2014, 1:49 PM
+ * 
+ * Not re-entrant gethostbyname
  */
 
 #include <stdlib.h>
@@ -646,7 +648,9 @@ main(int argc, char **argv)
 
 	while ( --argc > 0) {
 		ptr = *++argv;
-                /* takes name, returns pointer to struct hostent,
+                
+                /* It is not re-entrant.
+                 * Takes name, returns pointer to struct hostent,
                  * that contains addr_list of binary IPv4 addresses */
 		if ( ( hptr = gethostbyname(ptr)) == NULL) {
 			err_msg( "gethostbyname error for host: %s: %s",
