@@ -11,12 +11,17 @@
 
 #include "networking_functions.h"
 
+/* unconnected */
 int
 udp_client( const char *host, const char *serv, SA **saptr, socklen_t *lenp)
 {
 	int				sockfd, n;
 	struct addrinfo	hints, *res, *ressave;
 
+        /* We set the address family to AF_UNSPEC, but the caller can use
+         * specific address to force a particular protocol (IPv4 or IPv6)
+         * i.e. 0.0.0.0 for IPv4 or 0::0 for IPv6
+         */
 	bzero( &hints, sizeof(struct addrinfo));
 	hints.ai_family = AF_UNSPEC;
 	hints.ai_socktype = SOCK_DGRAM;
@@ -58,6 +63,10 @@ tcp_listen( const char *host, const char *serv, socklen_t *addrlenp)
 	const int		on = 1;
 	struct addrinfo         hints, *res, *ressave;
 
+        /* We set the address family to AF_UNSPEC, but the caller can use
+         * specific address to force a particular protocol (IPv4 or IPv6)
+         * i.e. 0.0.0.0 for IPv4 or 0::0 for IPv6
+         */
 	bzero( &hints, sizeof( struct addrinfo));
 	hints.ai_flags = AI_PASSIVE;
 	hints.ai_family = AF_UNSPEC;
@@ -118,8 +127,19 @@ main(int argc, char **argv)
 	if ( argc != 3)
 		err_quit( "usage: daytimeudpcli1 <hostname/IPaddress> <service/port#>");
 
+        /* We do not set the SO_REUSEADDR socket option for the UDP socket because
+         * this socket option can allow multiple sockets to bind the same UDP port
+         * on hosts that support multicasting. Since there is nothing like TCP's
+         * TIME_WAIT state for a UDP socket, there is no need to set this socket
+         * option when the server is started.*/
 	sockfd = Udp_client( argv[1], argv[2], (void **) &sa, &salen);
-
+        
+        /* At this moment we don't know if peer is reachable or not
+         * If it is not reachable sendto return Success but Recvfrom
+         * will block forever (it doesn't see an ICMP "destination
+         * unreachable" packet coming back from peer because socket
+         * is unconnected)
+         */
 	printf( "sending to %s\n", Sock_ntop_host(sa, salen));
 
 	Sendto( sockfd, "", 1, 0, sa, salen);	/* send 1-byte datagram */
