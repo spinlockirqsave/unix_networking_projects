@@ -42,6 +42,7 @@ static int resolveHost(const char *host, unsigned int port, int family,
     char strport[32];
     snprintf(strport, sizeof strport, "%u", port);
 
+    /* reentrant */
     int ret = getaddrinfo( host, strport, &hints, res);
     if ( ret != 0) {
         err_quit("resolveHost error for host %s, port %d: %s",
