@@ -214,8 +214,8 @@ Socket(int family, int type, int protocol)
 void
 Connect(int fd, const struct sockaddr *sa, socklen_t salen)
 {
-	if (connect(fd, sa, salen) < 0)
-		err_sys("connect error");
+	if ( connect( fd, sa, salen) < 0)
+		err_sys( "connect error");
 }
 
 ssize_t
@@ -649,17 +649,17 @@ main(int argc, char **argv)
 
 	while (--argc > 0) {
 		ptr = *++argv;
-		if ( (hptr = gethostbyname(ptr)) == NULL) {
+		if ( ( hptr = gethostbyname(ptr)) == NULL) {
 			err_msg("gethostbyname error for host: %s: %s",
 					ptr, hstrerror(h_errno));
 			continue;
 		}
 		printf("official hostname: %s\n", hptr->h_name);
 
-		for (pptr = hptr->h_aliases; *pptr != NULL; pptr++)
+		for ( pptr = hptr->h_aliases; *pptr != NULL; pptr++)
 			printf("	alias: %s\n", *pptr);
 
-		switch (hptr->h_addrtype) {
+		switch ( hptr->h_addrtype) {
 		case AF_INET:
 #ifdef	AF_INET6
 		case AF_INET6:
@@ -667,14 +667,14 @@ main(int argc, char **argv)
 			pptr = hptr->h_addr_list;
 			for ( ; *pptr != NULL; pptr++) {
 				printf("\taddress: %s\n",
-					Inet_ntop(hptr->h_addrtype, *pptr, str, sizeof(str)));
+					Inet_ntop( hptr->h_addrtype, *pptr, str, sizeof(str)));
 
-				if ( (hptr = gethostbyaddr(*pptr, hptr->h_length,
-										   hptr->h_addrtype)) == NULL) {
+				if ( ( hptr = gethostbyaddr(*pptr, hptr->h_length,
+                                                        hptr->h_addrtype)) == NULL) {
 					printf("\t(gethostbyaddr failed)\n");
                                         break;
                                 }
-				else if (hptr->h_name != NULL)
+				else if ( hptr->h_name != NULL)
 					printf("\tname = %s\n", hptr->h_name);
 				else
 					printf("\t(no hostname returned by gethostbyaddr)\n");
