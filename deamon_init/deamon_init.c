@@ -6,7 +6,7 @@
 extern int	daemon_proc;	/* defined in error.c */
 
 int
-daemon_init(const char *pname, int facility)
+daemon_init( const char *pname, int facility)
 {
 	int		i;
 	pid_t	pid;
@@ -44,7 +44,13 @@ daemon_init(const char *pname, int facility)
 		_exit(0);			/* child 1 terminates */
 
 	/* child 2 continues... */
-
+        /*
+         * We set the global daemon_proc to nonzero. This external is defined by our err_XXX
+         * functions (Section D.3), and when its value is nonzero, this tells them to call syslog instead
+         * of doing an fprintf to standard error. This saves us from having to go through all our code
+         * and call one of our error functions if the server is not being run as a daemon (i.e., when we
+         * are testing the server), but call syslog if it is being run as a daemon.
+         */
 	daemon_proc = 1;			/* for err_XXX() functions */
 
 	chdir("/");				/* change working directory */
@@ -54,9 +60,9 @@ daemon_init(const char *pname, int facility)
 		close(i);
 
 	/* redirect stdin, stdout, and stderr to /dev/null */
-	open("/dev/null", O_RDONLY);
-	open("/dev/null", O_RDWR);
-	open("/dev/null", O_RDWR);
+	open( "/dev/null", O_RDONLY);
+	open( "/dev/null", O_RDWR);
+	open( "/dev/null", O_RDWR);
 
         /* 
          * will log into /var/log/syslog as default, 
