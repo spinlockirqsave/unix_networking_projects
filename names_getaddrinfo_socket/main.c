@@ -967,7 +967,7 @@ usage(const char *msg)
 }
 
 static const char *
-str_fam(int family)
+str_fam( int family)
 {
 #ifdef	IPv4
 	if (family == AF_INET)
