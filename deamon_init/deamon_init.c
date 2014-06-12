@@ -65,7 +65,7 @@ daemon_init( const char *pname, int facility)
 	open( "/dev/null", O_RDWR);
 
         /* 
-         * will log into /var/log/syslog as default, 
+         * will log into /var/log/syslog as default,
          * i.e. Jun 11 23:40:27 ubuntucomputer ./deamon_init[23214]: connection from 127.0.0.1:44937
          * please redirect output from pname in /etc/rsyslog.conf
          * i.e kern.* local7.debug
