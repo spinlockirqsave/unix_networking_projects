@@ -3,6 +3,11 @@
  * Author: piter
  *
  * Created on June 9, 2014, 6:10 PM
+ * 
+ * UDP daytime service according to RFC 867, May 1983
+ * Returns ASCII character string in the form:
+ * Tuesday, February 22, 1982 17:37:43-PST
+ * http://tools.ietf.org/html/rfc867
  */
 
 #include <stdio.h>
