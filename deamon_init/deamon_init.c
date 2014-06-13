@@ -70,6 +70,8 @@ daemon_init( const char *pname, int facility)
          * please redirect output from pname in /etc/rsyslog.conf
          * i.e kern.* local7.debug
          * /dev/console /var/log/cisco.log
+         * 
+         * LOG_PID flag logs process id
          */
 	openlog( pname, LOG_PID, facility);
 
