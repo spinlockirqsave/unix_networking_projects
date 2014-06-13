@@ -32,7 +32,7 @@ dg_cli( FILE *fp, int sockfd, const SA *pservaddr, socklen_t servlen)
 		Sendto( sockfd, sendline, strlen(sendline), 0, pservaddr, servlen);
 
 		alarm(5);
-		if ( (n = recvfrom( sockfd, recvline, MAXLINE, 0, NULL, NULL)) < 0) {
+		if ( ( n = recvfrom( sockfd, recvline, MAXLINE, 0, NULL, NULL)) < 0) {
 			if ( errno == EINTR)
 				fprintf( stderr, "socket timeout\n");
 			else
@@ -46,7 +46,7 @@ dg_cli( FILE *fp, int sockfd, const SA *pservaddr, socklen_t servlen)
 }
 
 static void
-sig_alrm(int signo)
+sig_alrm( int signo)
 {
 	return;			/* just interrupt the recvfrom() */
 }
@@ -54,7 +54,7 @@ sig_alrm(int signo)
 static void
 sig_chld( int signo)
 {
-    return;
+    return;                     /* not used */
 }
 
 /*
