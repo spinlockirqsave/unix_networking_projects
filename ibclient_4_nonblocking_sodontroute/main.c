@@ -9,6 +9,7 @@
 
 #include "networking_functions.h"
 #include <time.h>
+#include <assert.h>
 
 #define IPv4
 #define IPv6
@@ -16,6 +17,48 @@
 
 static const char *str_fam(int);
 static const char *str_sock(int);
+
+char m_inBuffer[MAXLINE];
+char m_outBuffer[MAXLINE];
+int sockfd;
+
+void CleanupBuffer( char* buffer, int processed)
+{
+    memset( buffer, 0, processed);
+}
+
+int sendBufferedData()
+{
+	if( strlen( m_outBuffer) == 0)
+		return 0;
+
+	int nResult = Send( sockfd, &m_outBuffer[0], strlen( m_outBuffer));
+	if( nResult <= 0) {
+		return nResult;
+	}
+	CleanupBuffer( m_outBuffer, nResult);
+	return nResult;
+}
+
+int bufferedSend( const char* buf, size_t sz)
+{
+	if( sz <= 0)
+		return 0;
+
+	if( strlen( m_outBuffer) > 0) {
+		strncpy( m_outBuffer, buf, sz);
+		return sendBufferedData();
+	}
+
+	int nResult = Send( sockfd, buf, sz);
+
+	if( nResult < (int)sz) {
+		int sent = max( nResult, 0);
+		strncpy( m_outBuffer + strlen(m_outBuffer), buf + sent, sz - sent);
+	}
+
+	return nResult;
+}
 
 /**
  * Resolve host names.
@@ -179,7 +222,7 @@ Set_socket_for_nonblocking_io( int sockfd)
 
 int connect_nonblocking_socket( const char* host, unsigned int port, int family) {
     
-    int sockfd, m_fd, n;
+    int m_fd, n;
 
     /* connect to server */
     struct addrinfo *aiFirst;
@@ -243,14 +286,51 @@ int main( int argc, char** argv) {
     if (argc < 3)
 	usage("");
     
-    int sockfd = connect_nonblocking_socket( argv[1], atoi( argv[2]), AF_INET);
+    sockfd = connect_nonblocking_socket( argv[1], atoi( argv[2]), AF_INET);
     if( sockfd < 0) exit(-1);
     
     int option = 1;
     Setsockopt( sockfd, SOL_SOCKET, SO_DONTROUTE, &option, sizeof(option));
     
     printf( "OK\n");
-    sleep( 15);
+    sleep( 1);
+    
+    
+    if ( wait_socket( sockfd, WAIT_WRITE) <= 0) {
+        
+        /* if timeout */
+        if ( errno == 0) {
+            errno = ETIMEDOUT;
+        }
+        /* maybe interrupted by a caught signal */
+        err_ret( "main, wait_socket error, %s", strerror( errno));
+        return -1;
+    }
+    printf( "OK. Ready to write. strlen(m_outBuffer)=%d\n", strlen(m_outBuffer));
+    
+    const int CLIENT_VERSION = 60;
+    int tmp = htonl( (uint32_t)CLIENT_VERSION);
+    char buf[10];
+    strcpy( buf, "60");
+    bufferedSend( buf, 3);
+    printf( "OK. CLIENT_VERSION sent\n");
+    
+    if ( wait_socket( sockfd, WAIT_READ) <= 0) {
+        
+        /* if timeout */
+        if ( errno == 0) {
+            errno = ETIMEDOUT;
+        }
+        /* maybe interrupted by a caught signal */
+        err_ret( "main, wait_socket error, %s", strerror( errno));
+        return -1;
+    }
+    
+    printf( "OK. Ready to read\n");
+    int n = Read( sockfd, buf, MAXLINE);
+    printf( "Read:%s\n", buf);
+    
+    
     Close( sockfd);
         
     return (EXIT_SUCCESS);
