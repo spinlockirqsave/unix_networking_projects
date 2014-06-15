@@ -10,6 +10,7 @@
 #include "networking_functions.h"
 #include <time.h>
 #include <assert.h>
+#include <netinet/tcp.h>
 
 #define IPv4
 #define IPv6
@@ -289,8 +290,13 @@ int main( int argc, char** argv) {
     sockfd = connect_nonblocking_socket( argv[1], atoi( argv[2]), AF_INET);
     if( sockfd < 0) exit(-1);
     
+    /* Bypass routing table lookup */
     int option = 1;
     Setsockopt( sockfd, SOL_SOCKET, SO_DONTROUTE, &option, sizeof(option));
+    
+    /* Disable Nagle's algorithm */
+    option = 1;
+    Setsockopt( sockfd, IPPROTO_TCP, TCP_NODELAY, &option, sizeof(option));
     
     printf( "OK\n");
     sleep( 1);
