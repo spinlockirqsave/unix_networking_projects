@@ -17,7 +17,7 @@ readable_timeo( int fd, int sec)
 }
 
 int
-Readable_timeo(int fd, int sec)
+Readable_timeo( int fd, int sec)
 {
 	int		n;
 
