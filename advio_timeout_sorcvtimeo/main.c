@@ -4,7 +4,7 @@
  *
  * Created on June 11, 2014, 10:58 PM
  * 
- * Put timeout on recvfrom using select
+ * Put timeout on all read operations on socket using SO_RCVTIMEO
  */
 
 #include <stdio.h>
