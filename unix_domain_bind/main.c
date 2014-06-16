@@ -46,7 +46,8 @@ main(int argc, char **argv)
         /* Create IPC socket */
 	sockfd = Socket( AF_LOCAL, SOCK_STREAM, 0);
 
-	unlink(argv[1]);		/* OK if this fails */
+        /* unlink in case the link exists from an earlier run of the server */
+	unlink( argv[1]);		/* OK if this fails */
 
 	bzero( &addr1, sizeof(addr1));
 	addr1.sun_family = AF_LOCAL;
