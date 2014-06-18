@@ -40,7 +40,7 @@ str_cli( FILE *fp, int sockfd)
 	for ( ; ; ) {
 		if ( stdineof == 0)
 			FD_SET( fileno(fp), &rset);
-		FD_SET(sockfd, &rset);
+		FD_SET( sockfd, &rset);
 		maxfdp1 = max( fileno(fp), sockfd) + 1;
 		Select( maxfdp1, &rset, NULL, NULL, NULL);
 
@@ -49,7 +49,7 @@ str_cli( FILE *fp, int sockfd)
 				if ( stdineof == 1)
 					return;		/* normal termination */
 				else
-					err_quit("str_cli: server terminated prematurely");
+					err_quit( "str_cli: server terminated prematurely");
 			}
 
 			Write( fileno(stdout), buf, n);
