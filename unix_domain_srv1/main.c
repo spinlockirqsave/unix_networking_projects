@@ -40,7 +40,7 @@ sig_chld(int signo)
 	return;
 }
 
-/* same as before */
+/* same as before (same as in the case of AF_INET socket) */
 void
 str_echo( int sockfd)
 {
