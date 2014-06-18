@@ -41,7 +41,7 @@ my_open( const char *pathname, int mode)
 	Socketpair( AF_LOCAL, SOCK_STREAM, 0, sockfd);
 
 	if ( ( childpid = Fork()) == 0) {		/* child process */
-		Close(sockfd[0]);
+		Close( sockfd[0]);
 		snprintf( argsockfd, sizeof(argsockfd), "%d", sockfd[1]);
 		snprintf( argmode, sizeof(argmode), "%d", mode);
                 
@@ -86,14 +86,14 @@ main(int argc, char **argv)
 	int		fd, n;
 	char	buff[BUFFSIZE];
 
-	if (argc != 2)
-		err_quit("usage: mycat <pathname>");
+	if ( argc != 2)
+		err_quit( "usage: mycat <pathname>");
 
-	if ( (fd = my_open( argv[1], O_RDONLY)) < 0)
-		err_sys("cannot open %s", argv[1]);
+	if ( ( fd = my_open( argv[1], O_RDONLY)) < 0)
+		err_sys( "cannot open %s", argv[1]);
 
-	while ( (n = Read(fd, buff, BUFFSIZE)) > 0)
-		Write(STDOUT_FILENO, buff, n);
+	while ( ( n = Read( fd, buff, BUFFSIZE)) > 0)
+		Write( STDOUT_FILENO, buff, n);
 
 	exit(0);
 }
