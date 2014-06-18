@@ -37,7 +37,7 @@ inet_pton_loose(int af, const char* src, void* dst)
                 if( ( rc = inet_aton( src, &addr)) == 0)
                     return (-1);
                 memcpy( dst, &addr, sizeof( struct in_addr));
-                return (1);
+                return (0); // it was 1. hmm. ???
             }
             return (1);
 	case AF_INET6:
