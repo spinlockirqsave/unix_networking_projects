@@ -62,8 +62,8 @@ my_open( const char *pathname, int mode)
          * to the unix_domain_openfile
          */
 	Close( sockfd[1]);
-
 	Waitpid( childpid, &status, 0);
+        
 	if ( WIFEXITED(status) == 0)
 		err_quit( "child did not terminate");
 	if ( ( status = WEXITSTATUS(status)) == 0)
@@ -73,7 +73,7 @@ my_open( const char *pathname, int mode)
 		fd = -1;
 	}
 
-	Close(sockfd[0]);
+	Close( sockfd[0]);
 	return(fd);
 }
 
