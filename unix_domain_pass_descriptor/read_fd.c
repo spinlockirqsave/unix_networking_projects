@@ -1,6 +1,14 @@
 
 #include "networking_functions.h"
 
+/* 
+ * The client and server must have some application protocol so that the receiver
+ * of the descriptor knows when to expect it. If the receiver calls recvmsg without
+ * allocating room to receive the descriptor, and a descriptor was passed and is
+ * ready to be read, the descriptor that was being passed is closed (p. 518 of TCPv2).
+ * Also, the MSG_PEEK flag should be avoided with recvmsg if a descriptor is expected,
+ * as the result is unpredictable.
+ */
 ssize_t
 read_fd( int fd, void *ptr, size_t nbytes, int *recvfd)
 {
@@ -41,6 +49,14 @@ read_fd( int fd, void *ptr, size_t nbytes, int *recvfd)
 	msg.msg_iov = iov;
 	msg.msg_iovlen = 1;
 
+        /* receive the descriptor on the Unix domain socket fd.
+         * It is normal for the descriptor number in the receiving process
+         * to differ from the descriptor number in the sending process. Passing
+         * a descriptor is not passing a descriptor number, but involves creating
+         * a new descriptor in the receiving process that refers to the same file
+         * table entry within the kernel as the descriptor that was sent by
+         * the sending process.
+*/
 	if ( ( n = recvmsg( fd, &msg, 0)) <= 0)
 		return(n);
 
@@ -72,12 +88,12 @@ read_fd( int fd, void *ptr, size_t nbytes, int *recvfd)
 /* end read_fd */
 
 ssize_t
-Read_fd(int fd, void *ptr, size_t nbytes, int *recvfd)
+Read_fd( int fd, void *ptr, size_t nbytes, int *recvfd)
 {
 	ssize_t		n;
 
-	if ( (n = read_fd(fd, ptr, nbytes, recvfd)) < 0)
-		err_sys("read_fd error");
+	if ( ( n = read_fd( fd, ptr, nbytes, recvfd)) < 0)
+		err_sys( "read_fd error");
 
 	return(n);
 }

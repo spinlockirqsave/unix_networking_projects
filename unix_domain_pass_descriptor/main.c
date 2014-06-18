@@ -41,6 +41,8 @@ my_open( const char *pathname, int mode)
 	Socketpair( AF_LOCAL, SOCK_STREAM, 0, sockfd);
 
 	if ( ( childpid = Fork()) == 0) {		/* child process */
+            
+            /* parent uses sockfd[0] to read from pipe */
 		Close( sockfd[0]);
 		snprintf( argsockfd, sizeof(argsockfd), "%d", sockfd[1]);
 		snprintf( argmode, sizeof(argmode), "%d", mode);
@@ -59,14 +61,26 @@ my_open( const char *pathname, int mode)
 	/* 
          * parent process - wait for the child to terminate,
          * close the end we don't use - it has been passed already
-         * to the unix_domain_openfile
+         * to the unix_domain_openfile ( openfile sends with sendmsg
+         * through the pipe via this socket)
          */
 	Close( sockfd[1]);
 	Waitpid( childpid, &status, 0);
         
 	if ( WIFEXITED(status) == 0)
 		err_quit( "child did not terminate");
+        
 	if ( ( status = WEXITSTATUS(status)) == 0)
+            
+            /* receive the open socket via sockfd[0] */
+/* 
+ * The client and server must have some application protocol so that the receiver
+ * of the descriptor knows when to expect it. If the receiver calls recvmsg without
+ * allocating room to receive the descriptor, and a descriptor was passed and is
+ * ready to be read, the descriptor that was being passed is closed (p. 518 of TCPv2).
+ * Also, the MSG_PEEK flag should be avoided with recvmsg if a descriptor is expected,
+ * as the result is unpredictable. Here we have just waitpid for the child.
+ */            
 		Read_fd( sockfd[0], &c, 1, &fd);
 	else {
 		errno = status;		/* set errno value from child's status */
