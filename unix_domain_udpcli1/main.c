@@ -2,7 +2,7 @@
  * File:   main.c
  * Author: piter
  *
- * Created on June 16, 2014, 13:30:20 PM
+ * Created on June 16, 2014, 01:30:20 PM
  * 
  * A Unix domain socket or IPC socket (inter-process communication socket)
  * is a data communications endpoint for exchanging data between processes
