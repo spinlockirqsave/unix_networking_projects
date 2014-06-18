@@ -27,6 +27,8 @@
 
 #include "networking_functions.h"
 
+
+/* same as before (same as in the case of AF_INET socket) */
 void
 str_cli( FILE *fp, int sockfd)
 {
