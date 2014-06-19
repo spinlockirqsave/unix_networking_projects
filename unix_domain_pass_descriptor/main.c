@@ -96,10 +96,10 @@ my_open( const char *pathname, int mode)
 }
 
 /*
- * 
+ * This process execl unix_domain_openfile program in forked child
  */
 int
-main(int argc, char **argv)
+main( int argc, char **argv)
 {
 	int		fd, n;
 	char	buff[BUFFSIZE];
