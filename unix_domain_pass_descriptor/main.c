@@ -107,8 +107,12 @@ main(int argc, char **argv)
 	if ( argc != 2)
 		err_quit( "usage: mycat <pathname>");
 
-        /* socketpair, fork, execl, recvmsg with open fd*/
-	if ( ( fd = my_open( argv[1], O_RDWR)) < 0)
+        /* 
+         * socketpair, fork, execl, recvmsg with open fd
+         * file at pathname will be opened in read/write mode, append,
+         * create if not exist
+         */
+	if ( ( fd = my_open( argv[1], O_RDWR | O_APPEND | O_CREAT)) < 0)
 		err_sys( "cannot open %s", argv[1]);
 
         /* read from fd */
