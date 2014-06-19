@@ -27,10 +27,7 @@
 
 #include "networking_functions.h"
 
-//SCM_CREDENTIALS c;
-
-//typedef struct ucred  ucred;
-//typedef ucred cmsgcred;
+#define SCM_CREDENTIALS 0x02
 
 struct ucred
 {
@@ -61,6 +58,18 @@ read_cred( int fd, void *ptr, size_t nbytes, struct ucred * cmsgcredptr)
 
 	if ( ( n = recvmsg( fd, &msg, 0)) < 0)
 		return(n);
+        
+	if ( cmsgcredptr && msg.msg_controllen > 0) {
+		struct cmsghdr	*cmptr = (struct cmsghdr *) control;
+
+		if (cmptr->cmsg_len < CONTROL_LEN)
+			err_quit("control length = %d", cmptr->cmsg_len);
+		if (cmptr->cmsg_level != SOL_SOCKET)
+			err_quit("control level != SOL_SOCKET");
+		if (cmptr->cmsg_type != SCM_CREDENTIALS)
+			err_quit("control type != SCM_CREDENTIALS");
+		memcpy( cmsgcredptr, CMSG_DATA(cmptr), sizeof(struct ucred));
+	}
 
 	return(n);
 }
