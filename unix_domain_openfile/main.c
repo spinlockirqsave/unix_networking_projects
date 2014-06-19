@@ -63,7 +63,7 @@ write_fd( int fd, void *ptr, size_t nbytes, int sendfd)
 	msg.msg_name = NULL;
 	msg.msg_namelen = 0;
 
-	iov[0].iov_base = ptr;
+	iov[0].iov_base = ptr;  // fill in optional data
 	iov[0].iov_len = nbytes;
 	msg.msg_iov = iov;
 	msg.msg_iovlen = 1;
@@ -94,8 +94,10 @@ main( int argc, char **argv)
 		err_quit( "openfile <sockfd#> <filename> <mode>");
 
         /* open filename given by argv[2] as a descriptor to be sent */
-	if ( ( fd = open( argv[2], atoi(argv[3]))) < 0)
+	if ( ( fd = open( argv[2], atoi(argv[3]) | O_APPEND)) < 0)
 		exit( ( errno > 0) ? errno : 255 );
+        
+        Write( fd, "written\n", 8);
 
         /* send opened fd descriptor through sockfd given by argv[1] */
 	if ( write_fd( atoi(argv[1]), "", 1, fd) < 0)
