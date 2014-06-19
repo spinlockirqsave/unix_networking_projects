@@ -94,7 +94,7 @@ main( int argc, char **argv)
 		err_quit( "openfile <sockfd#> <filename> <mode>");
 
         /* open filename given by argv[2] as a descriptor to be sent */
-	if ( ( fd = open( argv[2], atoi(argv[3]) | O_APPEND)) < 0)
+	if ( ( fd = open( argv[2], atoi(argv[3]))) < 0)
 		exit( ( errno > 0) ? errno : 255 );
         
         Write( fd, "written\n", 8);
