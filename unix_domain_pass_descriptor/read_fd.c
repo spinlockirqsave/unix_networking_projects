@@ -49,7 +49,7 @@ read_fd( int fd, void *ptr, size_t nbytes, int *recvfd)
 	msg.msg_iov = iov;
 	msg.msg_iovlen = 1;
 
-        /* receive the descriptor on the Unix domain socket fd.
+        /* receive the descriptor in msg through the Unix domain socket fd.
          * It is normal for the descriptor number in the receiving process
          * to differ from the descriptor number in the sending process. Passing
          * a descriptor is not passing a descriptor number, but involves creating

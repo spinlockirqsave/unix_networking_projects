@@ -24,6 +24,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <fcntl.h>
 
 #include "networking_functions.h"
 
@@ -51,9 +52,12 @@ my_open( const char *pathname, int mode)
                  * This sending process unix_domain_openfile builds a msghdr structure
                  * (Section 14.5) containing the descriptor. Then sending process calls
                  * sendmsg to send the descriptor across the Unix domain socket sockfd[1]
-                 * passed in argsockfd
+                 * passed in argsockfd as text
+                 * 
+                 * We send arguments as text, an alternative method is to send these
+                 * three items as data across the stream pipe.
                  */
-		execl( "./unix_domain_openfile", "openfile",
+		execl( "../unix_domain_openfile/unix_domain_openfile", "my_openfile",
                         argsockfd, pathname, argmode, (char *) NULL);
 		err_sys( "execl error");
 	}
@@ -103,9 +107,11 @@ main(int argc, char **argv)
 	if ( argc != 2)
 		err_quit( "usage: mycat <pathname>");
 
-	if ( ( fd = my_open( argv[1], O_RDONLY)) < 0)
+        /* socketpair, fork, execl, recvmsg with open fd*/
+	if ( ( fd = my_open( argv[1], O_RDWR)) < 0)
 		err_sys( "cannot open %s", argv[1]);
 
+        /* read from fd */
 	while ( ( n = Read( fd, buff, BUFFSIZE)) > 0)
 		Write( STDOUT_FILENO, buff, n);
 
