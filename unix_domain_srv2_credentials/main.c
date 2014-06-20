@@ -19,6 +19,10 @@
  * In addition to sending data, processes may send file descriptors across
  * a Unix domain socket connection using the sendmsg() and recvmsg() system
  * calls.
+ * 
+ * Exactly how credentials are packaged up and sent as ancillary data tends
+ * to be OS-specific. We use here Linux ucred structure. It is defined in
+ * <socket.h>
  */
 
 #include <stdio.h>
@@ -26,6 +30,7 @@
 #include <time.h>
 
 #include "networking_functions.h"
+
 
 #define SCM_CREDENTIALS 0x02
 
@@ -79,7 +84,7 @@ void
 str_echo(int sockfd)
 {
 	ssize_t			n;
-	int			i;
+	int			i, len;
 	char			buf[MAXLINE];
 	struct ucred    cred;
 
@@ -97,13 +102,22 @@ again:
 			printf("real group ID = %d\n", cred.gid);
 			printf("\n");
 		}
-		Writen(sockfd, buf, n);
+                
+                bzero( &cred, sizeof( struct ucred));
+                len = sizeof(struct ucred);
+                if ( getsockopt( sockfd, SOL_SOCKET, SO_PEERCRED, &cred, &len) == -1)
+                    err_quit( "getsockopt");
+                
+                printf( "Credentials from SO_PEERCRED: pid=%ld, euid=%ld, egid=%ld\n",
+                        (long) cred.pid, (long) cred.uid, (long) cred.gid);
+    
+		Writen( sockfd, buf, n);
 	}
 
-	if (n < 0 && errno == EINTR)
+	if ( n < 0 && errno == EINTR)
 		goto again;
-	else if (n < 0)
-		err_sys("str_echo: read error");
+	else if ( n < 0)
+		err_sys( "str_echo: read error");
 }
 
 void
@@ -125,7 +139,7 @@ sig_chld(int signo)
 int
 main( int argc, char **argv)
 {
-	int			listenfd, connfd, clilen;
+	int			listenfd, connfd, clilen, optval;
 	socklen_t		len, childpid;
 	struct sockaddr_un	servaddr, addr2;
         struct sockaddr_un	cliaddr;
@@ -135,6 +149,12 @@ main( int argc, char **argv)
 
         /* Create IPC socket */
 	listenfd = Socket( AF_LOCAL, SOCK_STREAM, 0);
+        
+       /* We must set the SO_PASSCRED socket option in order to receive credentials */
+
+        optval = 1;
+        if ( setsockopt( listenfd, SOL_SOCKET, SO_PASSCRED, &optval, sizeof(optval)) == -1)
+            err_quit("setsockopt");
 
         /* unlink in case the link exists from an earlier run of the server */
 	unlink( argv[1]);		/* OK if this fails */
