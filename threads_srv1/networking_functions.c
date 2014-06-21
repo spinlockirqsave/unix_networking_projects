@@ -233,7 +233,7 @@ Write(int fd, void *ptr, size_t nbytes)
 }
 
 ssize_t						/* Write "n" bytes to a descriptor. */
-writen(int fd, const void *vptr, size_t n)
+writen( int fd, const void *vptr, size_t n)
 {
 	size_t		nleft;
 	ssize_t		nwritten;
@@ -241,9 +241,9 @@ writen(int fd, const void *vptr, size_t n)
 
 	ptr = ( const char*) vptr;
 	nleft = n;
-	while (nleft > 0) {
-		if ( (nwritten = write(fd, ptr, nleft)) <= 0) {
-			if (nwritten < 0 && errno == EINTR)
+	while ( nleft > 0) {
+		if ( ( nwritten = write( fd, ptr, nleft)) <= 0) {
+			if ( nwritten < 0 && errno == EINTR)
 				nwritten = 0;		/* and call write() again */
 			else
 				return(-1);			/* error */
@@ -257,73 +257,73 @@ writen(int fd, const void *vptr, size_t n)
 /* end writen */
 
 void
-Writen(int fd, void *ptr, size_t nbytes)
+Writen( int fd, void *ptr, size_t nbytes)
 {
-	if (writen(fd, ptr, nbytes) != nbytes)
-		err_sys("writen error");
+	if ( writen( fd, ptr, nbytes) != nbytes)
+		err_sys( "writen error");
 }
 
 int
-Select(int nfds, fd_set *readfds, fd_set *writefds, fd_set *exceptfds,
+Select( int nfds, fd_set *readfds, fd_set *writefds, fd_set *exceptfds,
        struct timeval *timeout)
 {
 	int		n;
 
-	if ( (n = select(nfds, readfds, writefds, exceptfds, timeout)) < 0)
-		err_sys("select error");
+	if ( ( n = select( nfds, readfds, writefds, exceptfds, timeout)) < 0)
+		err_sys( "select error");
 	return(n);		/* can return 0 on timeout */
 }
 
 void
-Send(int fd, const void *ptr, size_t nbytes, int flags)
+Send( int fd, const void *ptr, size_t nbytes, int flags)
 {
-	if (send(fd, ptr, nbytes, flags) != (ssize_t)nbytes)
-		err_sys("send error");
+	if ( send( fd, ptr, nbytes, flags) != (ssize_t)nbytes)
+		err_sys( "send error");
 }
 
 void
-Sendto(int fd, const void *ptr, size_t nbytes, int flags,
+Sendto( int fd, const void *ptr, size_t nbytes, int flags,
 	   const struct sockaddr *sa, socklen_t salen)
 {
-	if (sendto(fd, ptr, nbytes, flags, sa, salen) != (ssize_t)nbytes)
-		err_sys("sendto error");
+	if ( sendto( fd, ptr, nbytes, flags, sa, salen) != (ssize_t)nbytes)
+		err_sys( "sendto error");
 }
 
 void
-Sendmsg(int fd, const struct msghdr *msg, int flags)
+Sendmsg( int fd, const struct msghdr *msg, int flags)
 {
 	unsigned int	i;
 	ssize_t			nbytes;
 
 	nbytes = 0;	/* must first figure out what return value should be */
-	for (i = 0; i < msg->msg_iovlen; i++)
+	for ( i = 0; i < msg->msg_iovlen; i++)
 		nbytes += msg->msg_iov[i].iov_len;
 
-	if (sendmsg(fd, msg, flags) != nbytes)
-		err_sys("sendmsg error");
+	if ( sendmsg( fd, msg, flags) != nbytes)
+		err_sys( "sendmsg error");
 }
 
 void
-Setsockopt(int fd, int level, int optname, const void *optval, socklen_t optlen)
+Setsockopt( int fd, int level, int optname, const void *optval, socklen_t optlen)
 {
-	if (setsockopt(fd, level, optname, optval, optlen) < 0)
-		err_sys("setsockopt error");
+	if ( setsockopt( fd, level, optname, optval, optlen) < 0)
+		err_sys( "setsockopt error");
 }
 
 void
-Shutdown(int fd, int how)
+Shutdown( int fd, int how)
 {
-	if (shutdown(fd, how) < 0)
-		err_sys("shutdown error");
+	if ( shutdown( fd, how) < 0)
+		err_sys( "shutdown error");
 }
 
 char *
-Fgets(char *ptr, int n, FILE *stream)
+Fgets( char *ptr, int n, FILE *stream)
 {
 	char	*rptr;
 
-	if ( (rptr = fgets(ptr, n, stream)) == NULL && ferror(stream))
-		err_sys("fgets error");
+	if ( ( rptr = fgets( ptr, n, stream)) == NULL && ferror(stream))
+		err_sys( "fgets error");
 
 	return (rptr);
 }

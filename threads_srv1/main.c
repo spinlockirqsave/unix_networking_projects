@@ -49,7 +49,7 @@ main( int argc, char **argv)
 
 	if ( argc == 2)
 		listenfd = Tcp_listen( NULL, argv[1], &addrlen);
-	else if (argc == 3)
+	else if ( argc == 3)
 		listenfd = Tcp_listen( argv[1], argv[2], &addrlen);
 	else
 		err_quit( "usage: threads_srv1 [ <host> ] <service or port>");
@@ -65,7 +65,11 @@ main( int argc, char **argv)
                  * This way the integer value of descriptor is copied
                  * so each thread operates on different descriptor,
                  * not on same connfd ( as it would be if we passed
-                 * &connfd instead)
+                 * &connfd instead). This is not guaranteed to work
+                 * on all operating systems. Alternately we can do
+                 * this allocating place for the connfd on heap,
+                 * assigning result from accept to it and passing
+                 * pointer as last argument in pthread_create 
                  */
 		Pthread_create( &tid, NULL, &doit, (void *) connfd);
 	}
