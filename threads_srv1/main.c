@@ -81,7 +81,7 @@ doit( void *arg)
     //printf( "tid=%d,self=%d\n", tid, pthread_self());
     pthread_t pt = pthread_self();
 	Pthread_detach( pt);
-	str_echo( (int) arg);	/* same function as before */
+	str_echo( (int) arg);           /* same function as before */
 	Close( (int) arg);		/* done with connected socket */
 	return(NULL);
 }
