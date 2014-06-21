@@ -78,7 +78,7 @@ main( int argc, char **argv)
 static void *
 doit( void *arg)
 {
-    //printf( "tid=%d,self=%d\n", tid, pthread_self());
+    printf( "self=%lu\n", pthread_self());
     pthread_t pt = pthread_self();
 	Pthread_detach( pt);
 	str_echo( (int) arg);           /* same function as before */
