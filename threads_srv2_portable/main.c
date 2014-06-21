@@ -10,6 +10,15 @@
  * its own copy of the connected descriptor.
  * The thread fetches the value of the connected
  * descriptor and then calls free to release the memory.
+ * 
+ * Historically, the malloc and free functions have been nonre-entrant.
+ * That is, calling either function from a signal handler while the main
+ * thread is in the middle of one of these two functions has been a recipe
+ * for disaster, because of static data structures that are manipulated
+ * by these two functions. How can we call these two functions here?
+ * POSIX requires that these two functions, along with many others,
+ * be thread-safe. This is normally done by some form of synchronization
+ * performed within the library functions that is transparent to us.
  */
 
 #include <stdio.h>
