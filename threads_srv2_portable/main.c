@@ -4,6 +4,12 @@
  *
  * Created on June 20, 2014, 10:59 PM
  * 
+ * Each time we call accept, we first call malloc
+ * and allocate space for an integer variable,
+ * the connected descriptor. This gives each thread
+ * its own copy of the connected descriptor.
+ * The thread fetches the value of the connected
+ * descriptor and then calls free to release the memory.
  */
 
 #include <stdio.h>
@@ -35,7 +41,7 @@ main( int argc, char **argv)
 	else if ( argc == 3)
 		listenfd = Tcp_listen( argv[1], argv[2], &addrlen);
 	else
-		err_quit("usage: threads_srv2 [ <host> ] <service or port>");
+		err_quit( "usage: threads_srv2 [ <host> ] <service or port>");
 
 	cliaddr = Malloc(addrlen);
 
@@ -49,6 +55,7 @@ main( int argc, char **argv)
 		len = addrlen;
 		iptr = Malloc(sizeof(int));
 		*iptr = Accept( listenfd, cliaddr, &len);
+                
 		Pthread_create( &tid, NULL, &doit, iptr);
 	}
 }
@@ -65,7 +72,7 @@ doit(void *arg)
 	free(arg);
 
         tid = pthread_self();
-	Pthread_detach( tid);
+	Pthread_detach( tid);           /* so we don't join it in main thread */
 	str_echo(connfd);		/* same function as before */
 	Close(connfd);			/* done with connected socket */
 	return(NULL);
