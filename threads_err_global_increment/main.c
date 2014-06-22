@@ -14,25 +14,25 @@
 
 int				counter;		/* incremented by threads */
 
-void	*doit(void *);
+void	*doit( void *);
 
 int
 main( int argc, char **argv)
 {
 	pthread_t	tidA, tidB, tidC, tidD;
 
-	Pthread_create(&tidA, NULL, &doit, NULL);
-	Pthread_create(&tidB, NULL, &doit, NULL);
-        Pthread_create(&tidC, NULL, &doit, NULL);
-        Pthread_create(&tidD, NULL, &doit, NULL);
+	Pthread_create( &tidA, NULL, &doit, NULL);
+	Pthread_create( &tidB, NULL, &doit, NULL);
+        Pthread_create( &tidC, NULL, &doit, NULL);
+        Pthread_create( &tidD, NULL, &doit, NULL);
 
 	/* wait for both threads to terminate */
-	Pthread_join(tidA, NULL);
-	Pthread_join(tidB, NULL);
-        Pthread_join(tidC, NULL);
-        Pthread_join(tidD, NULL);
+	Pthread_join( tidA, NULL);
+	Pthread_join( tidB, NULL);
+        Pthread_join( tidC, NULL);
+        Pthread_join( tidD, NULL);
         
-        printf("counter: %d\n", counter);
+        printf( "counter: %d\n", counter);
 
 	exit(0);
 }
@@ -50,7 +50,7 @@ doit( void *vptr)
 	for ( i = 0; i < NLOOP; i++) {
             
 		val = counter;
-		printf("%lu: %d\n", pthread_self(), val + 1);
+		printf( "%lu: %d\n", pthread_self(), val + 1);
 		counter = val + 1;
                 fflush( stdout);
 	}
