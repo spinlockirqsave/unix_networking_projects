@@ -44,7 +44,7 @@ doit( void *vptr)
 
 	/*
 	 * Each thread fetches, prints, and increments the counter NLOOP times.
-	 * The value of the counter should increase monotonically.
+	 * The value of the counter should increase monotonically (if it was be correct).
 	 */
 
 	for ( i = 0; i < NLOOP; i++) {
