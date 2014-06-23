@@ -181,7 +181,7 @@ tcpdump: listening on any, link-type LINUX_SLL (Linux cooked), capture size 6553
 ^C10 packets captured
 20 packets received by filter
 0 packets dropped by kernel
- * 
+ 
 me@comp:projects/unix_networking_projects/nonblock_tcpcli1# tcpdump -r tcpd -N | sort diag -
 reading from file tcpd, link-type LINUX_SLL (Linux cooked)
 20:14:50.384474 IP localhost.50811 > localhost.9877: Flags [S], seq 2347207189, win 32792, options [mss 16396,sackOK,TS val 109913530 ecr 0,nop,wscale 7], length 0
