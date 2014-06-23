@@ -200,4 +200,58 @@ reading from file tcpd, link-type LINUX_SLL (Linux cooked)
 20:14:50.385433 IP localhost.50811 > localhost.9877: Flags [.], ack 36, win 257, options [nop,nop,TS val 109913530 ecr 109913530], length 0
 20:14:50.385489: wrote 34 bytes to stdout
 20:14:50.385513: EOF on socket
+ * 
+ * 
+
+
+ * bigger file:
+
+ tcpdump -i any -w tcpd tcp and port 9877
+ ^C15 packets captured
+30 packets received by filter
+0 packets dropped by kernel
+
+ 
+ ./nonblock_tcpcli1 127.0.0.1 < cuda_res.odt > out 2> diag
+ 
+me@comp:projects/unix_networking_projects/nonblock_tcpcli1# tcpdump -r tcpd -N | sort diag -
+reading from file tcpd, link-type LINUX_SLL (Linux cooked)
+21:03:55.095681 IP localhost.51241 > localhost.9877: Flags [S], seq 1631551149, win 32792, options [mss 16396,sackOK,TS val 110649707 ecr 0,nop,wscale 7], length 0
+21:03:55.095725 IP localhost.9877 > localhost.51241: Flags [S.], seq 505625946, ack 1631551150, win 32768, options [mss 16396,sackOK,TS val 110649707 ecr 110649707,nop,wscale 7], length 0
+21:03:55.095747 IP localhost.51241 > localhost.9877: Flags [.], ack 1, win 257, options [nop,nop,TS val 110649707 ecr 110649707], length 0
+21:03:55.095821: read 4096 bytes from stdin
+21:03:55.096195 IP localhost.51241 > localhost.9877: Flags [P.], seq 1:4097, ack 1, win 257, options [nop,nop,TS val 110649708 ecr 110649707], length 4096
+21:03:55.096237: wrote 4096 bytes to socket
+21:03:55.096239 IP localhost.9877 > localhost.51241: Flags [.], ack 4097, win 256, options [nop,nop,TS val 110649708 ecr 110649708], length 0
+21:03:55.096274 IP localhost.9877 > localhost.51241: Flags [P.], seq 1:4097, ack 4097, win 256, options [nop,nop,TS val 110649708 ecr 110649708], length 4096
+21:03:55.096275: read 4096 bytes from stdin
+21:03:55.096290 IP localhost.51241 > localhost.9877: Flags [.], ack 4097, win 256, options [nop,nop,TS val 110649708 ecr 110649708], length 0
+21:03:55.096309 IP localhost.51241 > localhost.9877: Flags [P.], seq 4097:8193, ack 4097, win 256, options [nop,nop,TS val 110649708 ecr 110649708], length 4096
+21:03:55.096334: wrote 4096 bytes to socket
+21:03:55.096348 IP localhost.9877 > localhost.51241: Flags [P.], seq 4097:8193, ack 8193, win 256, options [nop,nop,TS val 110649708 ecr 110649708], length 4096
+21:03:55.096370: read 4096 bytes from stdin
+21:03:55.096401: read 4096 bytes from socket
+21:03:55.096448: wrote 4096 bytes to stdout
+21:03:55.096476 IP localhost.51241 > localhost.9877: Flags [P.], seq 8193:12289, ack 8193, win 256, options [nop,nop,TS val 110649708 ecr 110649708], length 4096
+21:03:55.096503: wrote 4096 bytes to socket
+21:03:55.096533: read 4096 bytes from stdin
+21:03:55.096560: read 4096 bytes from socket
+21:03:55.096603: wrote 4096 bytes to stdout
+21:03:55.096632: wrote 4096 bytes to socket
+21:03:55.096663: read 1569 bytes from stdin
+21:03:55.096686: wrote 1569 bytes to socket
+21:03:55.096707: EOF on stdin
+21:03:55.096733 IP localhost.51241 > localhost.9877: Flags [FP.], seq 12289:17954, ack 8193, win 256, options [nop,nop,TS val 110649708 ecr 110649708], length 5665
+21:03:55.096776 IP localhost.9877 > localhost.51241: Flags [.], ack 17955, win 256, options [nop,nop,TS val 110649708 ecr 110649708], length 0
+21:03:55.096805 IP localhost.9877 > localhost.51241: Flags [P.], seq 8193:12289, ack 17955, win 256, options [nop,nop,TS val 110649708 ecr 110649708], length 4096
+21:03:55.096850 IP localhost.9877 > localhost.51241: Flags [FP.], seq 12289:17954, ack 17955, win 256, options [nop,nop,TS val 110649708 ecr 110649708], length 5665
+21:03:55.096867 IP localhost.51241 > localhost.9877: Flags [.], ack 17955, win 256, options [nop,nop,TS val 110649708 ecr 110649708], length 0
+21:03:55.096971: read 4096 bytes from socket
+21:03:55.097025: wrote 4096 bytes to stdout
+21:03:55.097054: read 4096 bytes from socket
+21:03:55.097093: wrote 4096 bytes to stdout
+21:03:55.097120: read 1569 bytes from socket
+21:03:55.097158: wrote 1569 bytes to stdout
+21:03:55.097182: EOF on socket
+
  */

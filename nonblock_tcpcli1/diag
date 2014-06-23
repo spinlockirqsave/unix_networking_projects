@@ -1,0 +1,22 @@
+21:03:55.095821: read 4096 bytes from stdin
+21:03:55.096237: wrote 4096 bytes to socket
+21:03:55.096275: read 4096 bytes from stdin
+21:03:55.096334: wrote 4096 bytes to socket
+21:03:55.096370: read 4096 bytes from stdin
+21:03:55.096401: read 4096 bytes from socket
+21:03:55.096448: wrote 4096 bytes to stdout
+21:03:55.096503: wrote 4096 bytes to socket
+21:03:55.096533: read 4096 bytes from stdin
+21:03:55.096560: read 4096 bytes from socket
+21:03:55.096603: wrote 4096 bytes to stdout
+21:03:55.096632: wrote 4096 bytes to socket
+21:03:55.096663: read 1569 bytes from stdin
+21:03:55.096686: wrote 1569 bytes to socket
+21:03:55.096707: EOF on stdin
+21:03:55.096971: read 4096 bytes from socket
+21:03:55.097025: wrote 4096 bytes to stdout
+21:03:55.097054: read 4096 bytes from socket
+21:03:55.097093: wrote 4096 bytes to stdout
+21:03:55.097120: read 1569 bytes from socket
+21:03:55.097158: wrote 1569 bytes to stdout
+21:03:55.097182: EOF on socket
