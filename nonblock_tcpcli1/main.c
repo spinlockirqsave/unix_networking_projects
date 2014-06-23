@@ -171,3 +171,33 @@ main( int argc, char **argv)
 
 	exit(0);
 }
+
+/*
+
+me@comp:projects/unix_networking_projects/nonblock_tcpcli1# ./nonblock_tcpcli1 127.0.0.1 < file.txt > out 2> diag
+
+me@comp:projects/unix_networking_projects/nonblock_tcpcli1# tcpdump -i any -w tcpd tcp and port 9877
+tcpdump: listening on any, link-type LINUX_SLL (Linux cooked), capture size 65535 bytes
+^C10 packets captured
+20 packets received by filter
+0 packets dropped by kernel
+ * 
+me@comp:projects/unix_networking_projects/nonblock_tcpcli1# tcpdump -r tcpd -N | sort diag -
+reading from file tcpd, link-type LINUX_SLL (Linux cooked)
+20:14:50.384474 IP localhost.50811 > localhost.9877: Flags [S], seq 2347207189, win 32792, options [mss 16396,sackOK,TS val 109913530 ecr 0,nop,wscale 7], length 0
+20:14:50.384502 IP localhost.9877 > localhost.50811: Flags [S.], seq 2885908781, ack 2347207190, win 32768, options [mss 16396,sackOK,TS val 109913530 ecr 109913530,nop,wscale 7], length 0
+20:14:50.384524 IP localhost.50811 > localhost.9877: Flags [.], ack 1, win 257, options [nop,nop,TS val 109913530 ecr 109913530], length 0
+20:14:50.384681: read 34 bytes from stdin
+20:14:50.385082 IP localhost.50811 > localhost.9877: Flags [P.], seq 1:35, ack 1, win 257, options [nop,nop,TS val 109913530 ecr 109913530], length 34
+20:14:50.385111: wrote 34 bytes to socket
+20:14:50.385147: EOF on stdin
+20:14:50.385175 IP localhost.50811 > localhost.9877: Flags [F.], seq 35, ack 1, win 257, options [nop,nop,TS val 109913530 ecr 109913530], length 0
+20:14:50.385305 IP localhost.9877 > localhost.50811: Flags [.], ack 35, win 256, options [nop,nop,TS val 109913530 ecr 109913530], length 0
+20:14:50.385367 IP localhost.9877 > localhost.50811: Flags [P.], seq 1:35, ack 36, win 256, options [nop,nop,TS val 109913530 ecr 109913530], length 34
+20:14:50.385392 IP localhost.50811 > localhost.9877: Flags [.], ack 35, win 257, options [nop,nop,TS val 109913530 ecr 109913530], length 0
+20:14:50.385416: read 34 bytes from socket
+20:14:50.385420 IP localhost.9877 > localhost.50811: Flags [F.], seq 35, ack 36, win 256, options [nop,nop,TS val 109913530 ecr 109913530], length 0
+20:14:50.385433 IP localhost.50811 > localhost.9877: Flags [.], ack 36, win 257, options [nop,nop,TS val 109913530 ecr 109913530], length 0
+20:14:50.385489: wrote 34 bytes to stdout
+20:14:50.385513: EOF on socket
+ */
