@@ -10,8 +10,9 @@
  * to buffer: stdin  -> socket -> server ( toiptr, tooptr)
  * fr buffer: stdout <- socket <- server ( friptr, froptr)
  * 
- * tcpdump -w tcpd tcp and port 9877
+ * tcpdump -i any -w tcpd tcp and port 9877
  * ./nonblock_tcpcli1 127.0.0.1 < file.txt > out 2> diag
+ * tcpdump -r tcpd -N | sort diag -
  * stdin from file.txt
  * stdout to out
  * stderr to diag
