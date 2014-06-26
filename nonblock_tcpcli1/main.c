@@ -16,6 +16,11 @@
  * stdin from file.txt or cuda_res.odt
  * stdout to out
  * stderr to diag
+ * 
+ * buffer:
+ * /-----------------/----------------------------/-----------------/MAXLINE
+ * /  already sent   /         data to be sent    / available space /
+ * 
  */
 
 #include <stdio.h>
