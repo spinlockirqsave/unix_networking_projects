@@ -119,6 +119,14 @@ signal(int signo, Sigfunc *func)
 #endif
 	} else {
 #ifdef	SA_RESTART
+            /*
+             * SA_RESTART is an optional flag. When the flag is set, a system call interrupted by this
+             * signal will be automatically restarted by the kernel. (We will talk more about interrupted
+             * system calls in the next section when we continue our example.) If the signal being caught is
+             * not SIGALRM, we specify the SA_RESTART flag, if defined. (The reason for making a special
+             * case for SIGALRM is that the purpose of generating this signal is normally to place a timeout
+             * on an I/O operation, in which case, we want the blocked system call to be interrupted by the signal.)
+             */
 		act.sa_flags |= SA_RESTART;		/* SVR4, 44BSD */
 #endif
 	}
@@ -502,8 +510,11 @@ str_echo(int sockfd)
 		if ( ( n = Read(sockfd, line, MAXLINE)) == 0)
 			return;		/* connection closed by other end */
 
+                printf( "read %d bytes=%s\n", n, line);
+                line[n] = 0;
 		n = strlen( line);
 		Writen( sockfd, line, n);
+                printf( "writen %d bytes=%s\n", n, line);
 	}
 }
 
