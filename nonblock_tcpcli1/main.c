@@ -18,6 +18,7 @@
  * stderr to diag
  * 
  * buffer:
+ *                  optr                         iptr
  * /-----------------/----------------------------/-----------------/MAXLINE
  * /  already sent   /         data to be sent    / available space /
  * 
@@ -56,14 +57,19 @@ str_cli( FILE *fp, int sockfd)
 	maxfdp1 = max( max(STDIN_FILENO, STDOUT_FILENO), sockfd) + 1;
         
 	for ( ; ; ) {
+            
 		FD_ZERO( &rset);
 		FD_ZERO( &wset);
+                
 		if ( stdineof == 0 && toiptr < &to[MAXLINE])
 			FD_SET( STDIN_FILENO, &rset);	/* read from stdin */
+                
 		if ( friptr < &fr[MAXLINE])
-			FD_SET( sockfd, &rset);			/* read from socket */
+			FD_SET( sockfd, &rset);		/* read from socket */
+                
 		if ( tooptr != toiptr)
-			FD_SET( sockfd, &wset);			/* data to write to socket */
+			FD_SET( sockfd, &wset);		/* data to write to socket */
+                
 		if ( froptr != friptr)
 			FD_SET( STDOUT_FILENO, &wset);	/* data to write to stdout */
 
