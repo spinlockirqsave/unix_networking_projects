@@ -18,8 +18,8 @@
  * stderr to diag
  * 
  * buffer:
- *                  optr                         iptr
- * /-----------------/----------------------------/-----------------/MAXLINE
+ *                  optr                         iptr             MAXLINE
+ * /-----------------/----------------------------/-----------------/
  * /  already sent   /         data to be sent    / available space /
  * 
  */
@@ -61,8 +61,13 @@ str_cli( FILE *fp, int sockfd)
 		FD_ZERO( &rset);
 		FD_ZERO( &wset);
                 
-		if ( stdineof == 0 && toiptr < &to[MAXLINE])
-			FD_SET( STDIN_FILENO, &rset);	/* read from stdin */
+		if ( stdineof == 0 && toiptr < &to[MAXLINE]) 
+                    
+                    /* 
+                     * there is a space in the buffer, i.e.
+                     * we can read from the stdin and store bytes in the buffer
+                    */
+                    FD_SET( STDIN_FILENO, &rset);	/* read from stdin */
                 
 		if ( friptr < &fr[MAXLINE])
 			FD_SET( sockfd, &rset);		/* read from socket */
@@ -73,10 +78,11 @@ str_cli( FILE *fp, int sockfd)
 		if ( froptr != friptr)
 			FD_SET( STDOUT_FILENO, &wset);	/* data to write to stdout */
 
-		Select ( maxfdp1, &rset, &wset, NULL, NULL);
+		Select( maxfdp1, &rset, &wset, NULL, NULL);
 
 		if ( FD_ISSET( STDIN_FILENO, &rset)) {
-			if ( ( n = read(STDIN_FILENO, toiptr, &to[MAXLINE] - toiptr)) < 0) {
+                    
+			if ( ( n = read( STDIN_FILENO, toiptr, &to[MAXLINE] - toiptr)) < 0) {
 				if ( errno != EWOULDBLOCK)
 					err_sys( "read error on stdin");
 
