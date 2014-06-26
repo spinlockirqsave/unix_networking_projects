@@ -64,18 +64,31 @@ str_cli( FILE *fp, int sockfd)
 		if ( stdineof == 0 && toiptr < &to[MAXLINE]) 
                     
                     /* 
-                     * there is a space in the buffer, i.e.
+                     * there is a space in the "to" buffer, i.e.
                      * we can read from the stdin and store bytes in the buffer
                     */
                     FD_SET( STDIN_FILENO, &rset);	/* read from stdin */
                 
 		if ( friptr < &fr[MAXLINE])
+                    
+                    /*
+                     * there is space in the "from" buffer, i.e
+                     * we can read from the socket, store bytes in the buffer
+                     */
 			FD_SET( sockfd, &rset);		/* read from socket */
                 
 		if ( tooptr != toiptr)
+                    
+                    /*
+                     * we have bytes to be sent 
+                     */
 			FD_SET( sockfd, &wset);		/* data to write to socket */
                 
 		if ( froptr != friptr)
+                    
+                    /*
+                     * we have bytes to be written to stdout
+                     */
 			FD_SET( STDOUT_FILENO, &wset);	/* data to write to stdout */
 
 		Select( maxfdp1, &rset, &wset, NULL, NULL);
