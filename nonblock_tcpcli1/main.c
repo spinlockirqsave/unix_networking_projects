@@ -49,9 +49,10 @@ str_cli( FILE *fp, int sockfd)
 	stdineof = 0;
 
 	maxfdp1 = max( max(STDIN_FILENO, STDOUT_FILENO), sockfd) + 1;
+        
 	for ( ; ; ) {
-		FD_ZERO(&rset);
-		FD_ZERO(&wset);
+		FD_ZERO( &rset);
+		FD_ZERO( &wset);
 		if ( stdineof == 0 && toiptr < &to[MAXLINE])
 			FD_SET( STDIN_FILENO, &rset);	/* read from stdin */
 		if ( friptr < &fr[MAXLINE])
