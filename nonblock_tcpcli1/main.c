@@ -63,7 +63,7 @@ str_cli( FILE *fp, int sockfd)
                 
 		if ( stdineof == 0 && toiptr < &to[MAXLINE]) 
                     
-                    /* 
+                    /*
                      * there is a space in the "to" buffer, i.e.
                      * we can read from the stdin and store bytes in the buffer
                     */
@@ -75,27 +75,28 @@ str_cli( FILE *fp, int sockfd)
                      * there is space in the "from" buffer, i.e
                      * we can read from the socket, store bytes in the buffer
                      */
-			FD_SET( sockfd, &rset);		/* read from socket */
+                    FD_SET( sockfd, &rset);		/* read from socket */
                 
 		if ( tooptr != toiptr)
                     
                     /*
                      * we have bytes to be sent 
                      */
-			FD_SET( sockfd, &wset);		/* data to write to socket */
+                    FD_SET( sockfd, &wset);		/* data to write to socket */
                 
 		if ( froptr != friptr)
                     
                     /*
                      * we have bytes to be written to stdout
                      */
-			FD_SET( STDOUT_FILENO, &wset);	/* data to write to stdout */
+                    FD_SET( STDOUT_FILENO, &wset);	/* data to write to stdout */
 
 		Select( maxfdp1, &rset, &wset, NULL, NULL);
 
 		if ( FD_ISSET( STDIN_FILENO, &rset)) {
                     
 			if ( ( n = read( STDIN_FILENO, toiptr, &to[MAXLINE] - toiptr)) < 0) {
+                            
 				if ( errno != EWOULDBLOCK)
 					err_sys( "read error on stdin");
 
@@ -112,11 +113,15 @@ str_cli( FILE *fp, int sockfd)
 				fprintf( stderr, "%s: read %d bytes from stdin\n", gf_time(), n);
 #endif
 				toiptr += n;			/* # just read */
+#ifdef VOL2
+                                if( n >= 2) fprintf( stderr, "*(toiptr-2)=%d, *(toiptr-1)=%d, *(toiptr)=%d\n", *(toiptr-2),*(toiptr-1), *toiptr );
+#endif
 				FD_SET( sockfd, &wset);	/* try and write to socket below */
 			}
 		}
 
 		if ( FD_ISSET( sockfd, &rset)) {
+                    
 			if ( ( n = read(sockfd, friptr, &fr[MAXLINE] - friptr)) < 0) {
 				if ( errno != EWOULDBLOCK)
 					err_sys( "read error on socket");
@@ -141,7 +146,9 @@ str_cli( FILE *fp, int sockfd)
 		}
 
 		if ( FD_ISSET( STDOUT_FILENO, &wset) && ( ( n = friptr - froptr) > 0)) {
+                    
 			if ( ( nwritten = write( STDOUT_FILENO, froptr, n)) < 0) {
+                            
 				if ( errno != EWOULDBLOCK)
 					err_sys("write error to stdout");
 
@@ -157,7 +164,8 @@ str_cli( FILE *fp, int sockfd)
 		}
 
 		if ( FD_ISSET( sockfd, &wset) && ( ( n = toiptr - tooptr) > 0)) {
-			if ( ( nwritten = write(sockfd, tooptr, n)) < 0) {
+                    
+			if ( ( nwritten = write( sockfd, tooptr, n)) < 0) {
 				if ( errno != EWOULDBLOCK)
 					err_sys( "write error to socket");
 
