@@ -4,7 +4,7 @@
  *
  * Created on June 27, 2014, 18:12 PM
  * 
- * nonblocking connect
+ * Nonblocking connect
  */
 
 #include <stdio.h>
