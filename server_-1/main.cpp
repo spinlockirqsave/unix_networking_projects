@@ -502,7 +502,6 @@ str_cli( FILE *fp, int sockfd)
 void
 str_echo(int sockfd)
 {
-	long		arg1, arg2;
 	ssize_t		n;
 	char		line[MAXLINE];
 
@@ -510,8 +509,8 @@ str_echo(int sockfd)
 		if ( ( n = Read(sockfd, line, MAXLINE)) == 0)
 			return;		/* connection closed by other end */
 
-                printf( "read %d bytes=%s\n", n, line);
                 line[n] = 0;
+                printf( "read %d bytes=%s\n", n, line);
 		n = strlen( line);
 		Writen( sockfd, line, n);
                 printf( "writen %d bytes=%s\n", n, line);
