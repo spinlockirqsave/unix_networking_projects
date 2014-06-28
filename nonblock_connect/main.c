@@ -15,7 +15,39 @@
 
 
 
+void
+str_cli( FILE *fp, int sockfd)
+{
+	pid_t	pid;
+	char	sendline[MAXLINE], recvline[MAXLINE];
 
+	if ( ( pid = Fork()) == 0) {		
+            
+            /* child: server -> stdout */
+            int n;
+            while ( ( n = Read( sockfd, recvline, MAXLINE)) > 0)
+            {
+                if( n < MAXLINE)
+                    recvline[n] = 0;
+                else recvline[ MAXLINE - 1] = 0;
+                
+                Fputs( recvline, stdout);
+            }
+
+            /* in case parent still running */
+            kill( getppid(), SIGTERM);
+            exit(0);
+	}
+
+		/* parent: stdin -> server */
+	while ( Fgets( sendline, MAXLINE, fp) != NULL)
+		Writen( sockfd, sendline, strlen(sendline));
+
+        /* received EOF on stdin, send FIN */
+	Shutdown( sockfd, SHUT_WR);
+	pause();
+	return;
+}
 
 /*
  * 
@@ -37,9 +69,9 @@ main( int argc, char **argv)
 	Inet_pton( AF_INET, argv[1], &servaddr.sin_addr);
 
 	if( connect_nonblocking( sockfd, (SA *) &servaddr, sizeof(servaddr), 0) < 0)
-            return -1;
-        
-        sleep(10);
+            err_sys("connect error");
+
+        str_cli( stdin, sockfd);		/* do it all */
 
 	exit(0);
 }
