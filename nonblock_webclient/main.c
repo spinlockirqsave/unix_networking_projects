@@ -43,16 +43,19 @@ main(int argc, char **argv)
 /* include web2 */
         
         /* Initiate another connection if possible */
-	while (nlefttoread > 0) {
-		while (nconn < maxnconn && nlefttoconn > 0) {
+	while ( nlefttoread > 0) {
+		while ( nconn < maxnconn && nlefttoconn > 0) {
 				/* 4find a file to read */
-			for (i = 0 ; i < nfiles; i++)
+			for ( i = 0 ; i < nfiles; i++)
                             
                             /* if file hasn't been processed yet */
 				if (file[i].f_flags == 0)
 					break;
-			if (i == nfiles)
+			if ( i == nfiles)
 				err_quit("nlefttoconn = %d but nothing found", nlefttoconn);
+                        
+                        /* nonblocking connect, sets descriptor flags in rs/ws or calls
+                         * write_get_cmd if connect completes immediately */
 			start_connect(&file[i]);
 			nconn++;
 			nlefttoconn--;
@@ -60,9 +63,9 @@ main(int argc, char **argv)
 
 		rs = rset;
 		ws = wset;
-		n = Select(maxfd+1, &rs, &ws, NULL, NULL);
+		n = Select( maxfd+1, &rs, &ws, NULL, NULL);
 
-		for (i = 0; i < nfiles; i++) {
+		for ( i = 0; i < nfiles; i++) {
 			flags = file[i].f_flags;
 			if (flags == 0 || flags & F_DONE)
 				continue;
