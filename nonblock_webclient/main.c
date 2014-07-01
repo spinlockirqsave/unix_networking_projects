@@ -55,7 +55,7 @@ main(int argc, char **argv)
 				err_quit("nlefttoconn = %d but nothing found", nlefttoconn);
                         
                         /* nonblocking connect, sets descriptor flags in rs/ws or calls
-                         * write_get_cmd if connect completes immediately */
+                         * write_get_cmd directly if connect completes immediately */
 			start_connect(&file[i]);
 			nconn++;
 			nlefttoconn--;
