@@ -6,6 +6,13 @@
  * 
  * Nonblocking io prevents us from blocking while we could be doing
  * something productive
+ * Nonblocking connects let us do other processing
+ * while TCP's three-way handshake takes place,
+ * instead of being blocked in the call to connect.
+ * Unfortunately, these are also nonportable,
+ * with different implementations having different
+ * ways of indicating that the connection completed
+ * successfully or encountered an error. 
  * 
  * to buffer: stdin  -> socket -> server ( toiptr, tooptr)
  * fr buffer: stdout <- socket <- server ( friptr, froptr)
