@@ -1,6 +1,6 @@
 /* 
  * File:   main.cpp
- * Author: piter cf16 eu
+ * Author: peter cf16 eu
  *
  * Created on May 22, 2014, 9:02 PM
  */
@@ -21,7 +21,7 @@
 #include <sys/resource.h>
 
 #define MAXLINE 4096
-#define SERV_PORT 9877
+#define SERV_PORT 12376
 #define SA struct sockaddr
 int		daemon_proc;		/* set nonzero by daemon_init() */
 /* Print message and return to caller
@@ -182,7 +182,7 @@ void
 Sendto(int fd, const void *ptr, size_t nbytes, int flags,
 	   const struct sockaddr *sa, socklen_t salen)
 {
-	if (sendto(fd, ptr, nbytes, flags, sa, salen) != (ssize_t)nbytes)
+	if ( sendto( fd, ptr, nbytes, flags, sa, salen) != (ssize_t)nbytes)
 		err_sys("sendto error");
 }
 
@@ -269,6 +269,7 @@ Recvfrom( int fd, void *ptr, size_t nbytes, int flags,
 
 	if ( ( n = recvfrom( fd, ptr, nbytes, flags, sa, salenptr)) < 0)
 		err_sys( "recvfrom error");
+        printf( "recvfrom n =  %d\n", n);
 	return(n);
 }
 
@@ -292,12 +293,13 @@ dg_cli( FILE *fp, int sockfd, const SA *pservaddr, socklen_t servlen)
              * 
              * The basic rule is that an asynchronous error is not returned
              * for a UDP socket unless the socket has been connected. */
-		Sendto(sockfd, sendline, strlen(sendline), 0, pservaddr, servlen);
+		Sendto(sockfd, sendline, strlen(sendline) - 1, 0, pservaddr, servlen);
 
 		n = Recvfrom(sockfd, recvline, MAXLINE, 0, NULL, NULL);
 
 		recvline[n] = 0;	/* null terminate */
-		Fputs(recvline, stdout);
+		Fputs( recvline, stdout);
+                Fputs( "\n", stdout);
 	}
 }
 
