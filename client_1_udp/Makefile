@@ -1,4 +1,4 @@
 all: prog
 	
 prog: main.o
-	g++ -g -o prog main.cpp
+	gcc -g -o prog main.c
