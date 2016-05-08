@@ -1,6 +1,6 @@
 /* 
  * File:   main.c
- * Author: piter
+ * Author: Piotr Gregor < piotrek.gregor gmail.com >
  *
  * Created on June 20, 2014, 10:59 PM
  * 
