@@ -46,18 +46,16 @@
 
 # Environment 
 MKDIR=mkdir
-CC= g++
+CC= gcc
 CFLAGS+= -g
 
 
-PROGS = server_0
+PROG = server_0
 
-all:	${PROGS}
+all: server_0
 	
 server_0:	main.o
-		${CC} ${CFLAGS} main.cpp ${LIBS}
-	
-
+		${CC} ${CFLAGS} main.c ${LIBS} -o ${PROG}
 
 clean:
-		rm -f ${PROGS} ${CLEANFILES}
+		rm -f ${PROG} ${PROG}.o main.o ${CLEANFILES}
