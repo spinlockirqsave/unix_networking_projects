@@ -389,10 +389,10 @@ dg_echo( int sockfd, SA *pcliaddr, socklen_t clilen)
                  * static memory. This means the function is not reentrant
                  */
                 char buff[100];
-                inet_ntop( AF_INET, &( (sockaddr_in* ) pcliaddr)->sin_addr, buff, 100);
+                inet_ntop( AF_INET, &( (struct sockaddr_in* ) pcliaddr)->sin_addr, buff, 100);
                 fprintf( stdout, "From:%s\n", buff);
                 char portstr[8];
-                sockaddr_in* sin = (sockaddr_in* ) pcliaddr;
+                struct sockaddr_in* sin = (struct sockaddr_in* ) pcliaddr;
                 if ( ntohs( sin->sin_port) != 0) {
 			snprintf( portstr, sizeof(portstr), ":%d", ntohs( sin->sin_port));
 			strcat( buff, portstr);
