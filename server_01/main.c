@@ -1,23 +1,23 @@
 /* 
- * File:   main.cpp
- * Author: piter cf16 eu
+ * File:   main.c
+ * Author: peter cf16 eu
  *
  * Created on May 14, 2014, 9:28 PM
  */
 
 #include <stdio.h>
 #include <errno.h>
-#include	<stdarg.h>		/* ANSI C header file */
-#include	<syslog.h>		/* for syslog() */
+#include <stdarg.h>		/* ANSI C header file */
+#include <syslog.h>		/* for syslog() */
 #include <string.h>
 #include <stdlib.h>
 
 #include <unistd.h>
-#include	<sys/types.h>
-#include        <sys/wait.h>            /* for waitpid */
-#include	<sys/socket.h>
-#include	<netinet/in.h>
-#include	<arpa/inet.h>
+#include <sys/types.h>
+#include <sys/wait.h>            /* for waitpid */
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
 
 #include <math.h>
 
@@ -494,25 +494,22 @@ str_cli( FILE *fp, int sockfd)
 void
 str_echo(int sockfd)
 {
-	long		arg1, arg2;
+    long		arg1, arg2;
 	ssize_t		n;
 	char		line[MAXLINE];
 
 	for ( ; ; ) {
-		if ( ( n = Read(sockfd, line, MAXLINE)) == 0)
-			return;		/* connection closed by other end */
-
-		if ( sscanf( line, "%ld%ld", &arg1, &arg2) == 2)
-			snprintf( line, sizeof(line), "%ld\n", arg1 + arg2);
-		else
-			snprintf( line, sizeof(line), "input error, I prefer "
-                                "to receive two long numbers so I can return a sum of it\n");
-
-		n = strlen( line);
-		Writen( sockfd, line, n);
+        if ((n = Read(sockfd, line, MAXLINE)) == 0)
+            return;		/* connection closed by other end */
+        Writen(sockfd, line, n);
 	}
 }
 
+
+void
+usage(const char *name) {
+    fprintf(stderr, "usage: %s port\n", name);
+}
 
 /*
  * 
@@ -520,30 +517,36 @@ str_echo(int sockfd)
 int
 main(int argc, char **argv)
 {
-	int				listenfd, connfd;
-	pid_t				childpid;
-	socklen_t			clilen;
-	struct sockaddr_in              cliaddr, servaddr;
+	int                 listenfd, connfd;
+	pid_t               childpid;
+	socklen_t           clilen;
+	struct sockaddr_in  cliaddr, servaddr;
+    uint16_t            port;
 
+    if (argc != 2) {
+        usage(argv[0]);
+        return EXIT_FAILURE;
+    }
+    port = atoi(argv[1]);
 	listenfd = Socket( AF_INET, SOCK_STREAM, 0);
 
 	bzero( &servaddr, sizeof( servaddr));
 	servaddr.sin_family      = AF_INET;
 	servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
-	servaddr.sin_port        = htons(SERV_PORT);
+	servaddr.sin_port        = htons(port);
 
-        /* SO_REUSEADDR allows a new server to be started
-         * on the same port as an existing server that is
-         * bound to the wildcard address, as long as each
-         * instance binds a different local IP address.
-         * This is common for a site hosting multiple HTTP
-         * servers using the IP alias technique */
-        int reuseaddr_on = 1;
-        if( setsockopt( listenfd, SOL_SOCKET, SO_REUSEADDR,
+    /* SO_REUSEADDR allows a new server to be started
+     * on the same port as an existing server that is
+     * bound to the wildcard address, as long as each
+     * instance binds a different local IP address.
+     * This is common for a site hosting multiple HTTP
+     * servers using the IP alias technique */
+    int reuseaddr_on = 1;
+    if( setsockopt( listenfd, SOL_SOCKET, SO_REUSEADDR,
                 &reuseaddr_on, sizeof( reuseaddr_on)) < 0)
-        {
-            // log
-        }
+    {
+        // log
+    }
 
 	Bind( listenfd, (SA *) &servaddr, sizeof( servaddr));
 
@@ -567,9 +570,5 @@ main(int argc, char **argv)
 		}
 		Close( connfd);			/* parent closes connected socket */
 	}
-        
-        return 0;
+    return 0;
 }
-
-
-

@@ -50,11 +50,11 @@ CC= gcc
 CFLAGS+= -g
 
 
-PROG = server_0
+PROG = server_01
 
-all: server_0
+all: server_01
 	
-server_0:	main.o
+server_01:	main.o
 		${CC} ${CFLAGS} main.c ${LIBS} -o ${PROG}
 
 clean:
