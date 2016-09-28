@@ -21,7 +21,7 @@
 #include <sys/resource.h>
 
 #define MAXLINE 4096
-#define SERV_PORT 5555
+#define SERV_PORT 19877
 #define SA struct sockaddr
 int		daemon_proc;		/* set nonzero by daemon_init() */
 /* Print message and return to caller
