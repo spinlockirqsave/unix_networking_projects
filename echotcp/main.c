@@ -19,8 +19,8 @@ int main(void)
 	char msg[MSG_LEN + 1] = {0};			/* length of message + terminating '\0' */
 
 	server.sin_family = AF_INET;
-	server.sin_port = htons(1234);
-	inet_pton(AF_INET, "192.168.1.104", &server.sin_addr);
+	server.sin_port = htons(5060);
+	inet_pton(AF_INET, "34.215.174.112", &server.sin_addr);
 
 	fd = socket(AF_INET, SOCK_STREAM, 0);
 	if (fd < 0)

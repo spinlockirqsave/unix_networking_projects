@@ -491,12 +491,14 @@ str_cli( FILE *fp, int sockfd)
 	}
 }
 
-void
-str_echo(int sockfd)
+static void str_echo(int sockfd, const char *ip_str, uint16_t port)
 {
     long		arg1, arg2;
 	ssize_t		n;
 	char		line[MAXLINE];
+
+	snprintf(line, MAXLINE, "You are visible to me as %s:%u", ip_str, port);
+	Writen(sockfd, line, strlen(line));
 
 	for ( ; ; ) {
         if ((n = Read(sockfd, line, MAXLINE)) == 0)
@@ -517,20 +519,23 @@ usage(const char *name) {
 int
 main(int argc, char **argv)
 {
-	int                 listenfd, connfd;
-	pid_t               childpid;
-	socklen_t           clilen;
-	struct sockaddr_in  cliaddr, servaddr;
-    uint16_t            port;
+	int                 listenfd = -1, connfd = -1;
+	pid_t               childpid = 0;
+	socklen_t           clilen = 0;
+	struct sockaddr_in  cliaddr = {}, servaddr = {};
+    uint16_t            port = 0;
+
+	char ip_str[INET_ADDRSTRLEN] = {};
+	struct in_addr		*ip_addr = NULL;
 
     if (argc != 2) {
         usage(argv[0]);
         return EXIT_FAILURE;
     }
     port = atoi(argv[1]);
-	listenfd = Socket( AF_INET, SOCK_STREAM, 0);
+	listenfd = Socket(AF_INET, SOCK_STREAM, 0);
 
-	bzero( &servaddr, sizeof( servaddr));
+	bzero(&servaddr, sizeof(servaddr));
 	servaddr.sin_family      = AF_INET;
 	servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
 	servaddr.sin_port        = htons(port);
@@ -542,33 +547,40 @@ main(int argc, char **argv)
      * This is common for a site hosting multiple HTTP
      * servers using the IP alias technique */
     int reuseaddr_on = 1;
-    if( setsockopt( listenfd, SOL_SOCKET, SO_REUSEADDR,
+    if (setsockopt( listenfd, SOL_SOCKET, SO_REUSEADDR,
                 &reuseaddr_on, sizeof( reuseaddr_on)) < 0)
-    {
+	{
         // log
     }
 
-	Bind( listenfd, (SA *) &servaddr, sizeof( servaddr));
+	Bind(listenfd, (SA *) &servaddr, sizeof( servaddr));
 
-	Listen( listenfd, LISTENQ);
+	Listen(listenfd, LISTENQ);
 
-	Signal( SIGCHLD, sig_chld);
+	Signal(SIGCHLD, sig_chld);
 
 	for ( ; ; ) {
+		
 		clilen = sizeof(cliaddr);
-		if ( ( connfd = accept( listenfd, (SA *) &cliaddr, &clilen)) < 0) {
-			if ( errno == EINTR)
+		if ((connfd = accept( listenfd, (SA *) &cliaddr, &clilen)) < 0) {
+			if (errno == EINTR)
 				continue;		/* back to for() */
 			else
 				err_sys( "accept error");
 		}
+		
+		ip_addr = &cliaddr.sin_addr;
+		port = ntohs(cliaddr.sin_port);
+		inet_ntop(AF_INET, ip_addr, ip_str, INET_ADDRSTRLEN);
+		fprintf(stderr, "New connection from %s:%u\n", ip_str, port);
 
-		if ( ( childpid = Fork()) == 0) {	/* child process */
-			Close( listenfd);               /* close listening socket */
-			str_echo( connfd);              /* process the request */
+		if ((childpid = Fork()) == 0) {	/* child process */
+			Close(listenfd);									/* close listening socket */
+			str_echo(connfd, ip_str, port);						/* process the request */
 			exit( 0);
 		}
-		Close( connfd);			/* parent closes connected socket */
+
+		Close(connfd);											/* parent closes connected socket */
 	}
     return 0;
 }
